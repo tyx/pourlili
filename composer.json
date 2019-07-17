@@ -12,6 +12,9 @@
         "symfony/yaml": "4.3.*"
     },
     "require-dev": {
+        "behat/behat": "^3.5",
+        "bossa/phpspec2-expect": "^3.1",
+        "symfony/debug-bundle": "4.3.*"
     },
     "config": {
         "preferred-install": {
