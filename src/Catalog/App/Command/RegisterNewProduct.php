@@ -1,10 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Catalog\App;
+namespace App\Catalog\App\Command;
 
 class RegisterNewProduct
 {
+    private $listId;
+
     private $name;
 
     private $price;
@@ -13,7 +15,7 @@ class RegisterNewProduct
 
     private $description;
 
-    public function __construct(string $name, float $price, string $imagePath, string $description)
+    public function __construct(string $listId, string $name, float $price, string $imagePath, string $description)
     {
         $this->name = $name;
         $this->price = $price;

@@ -1,0 +1,39 @@
+prooph_event_store:
+    stores:
+        default:
+            event_store: App\SharedKernel\Infra\Persistence\FileSystemEventStore
+            repositories:
+                catalog:
+                    repository_class: App\Catalog\Infra\ProophProductListRepository
+                    aggregate_type: App\Catalog\Domain\ProductList
+                    aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
+                    one_stream_per_aggregate: true
+                basket:
+                    repository_class: App\Basket\Infra\ProophBasketRepository
+                    aggregate_type: App\Basket\Domain\Basket
+                    aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
+                    one_stream_per_aggregate: true
+                contribution:
+                    repository_class: App\Contribution\Infra\ProophContributionRepository
+                    aggregate_type: App\Contribution\Domain\Contribution
+                    aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
+                    one_stream_per_aggregate: true
+    projection_managers:
+        catalog_projection_manager:
+            event_store: App\SharedKernel\Infra\Persistence\FileSystemEventStore
+            projections:
+                product_list_projection:
+                    projection: App\Catalog\Domain\ProductListProjection
+services:
+    _defaults:
+        public: false
+
+    Prooph\EventStore\EventStore: '@prooph_event_store.default'
+
+    Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator: ~
+
+    Prooph\EventSourcing\Aggregate\AggregateType: ~
+
+    Prooph\Common\Messaging\FQCNMessageFactory: ~
+
+    Prooph\Common\Messaging\NoOpMessageConverter: ~

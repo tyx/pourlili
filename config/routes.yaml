@@ -1,3 +1,29 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+product_index:
+   path: /
+   methods: [GET]
+   controller: App\Catalog\Ui\Controller\ProductController::index
+
+basket_index:
+   path: /cart
+   methods: [GET]
+   controller: App\Basket\Ui\Controller\BasketController::index
+
+basket_add:
+   path: /cart
+   methods: [POST]
+   controller: App\Basket\Ui\Controller\BasketController::addProduct
+
+contribution_checkout:
+   path: /checkout
+   methods: [GET, POST]
+   controller: App\Contribution\Ui\Controller\ContributionController::checkout
+
+contribution_confirm:
+   path: /confirm/{contributionId}
+   methods: [GET]
+   controller: App\Contribution\Ui\Controller\ContributionController::confirm
+
+contribution_thanks:
+   path: /thanks
+   methods: [GET]
+   controller: App\Contribution\Ui\Controller\ContributionController::thanks

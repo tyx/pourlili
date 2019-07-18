@@ -1,0 +1,57 @@
+{% extends 'layout.html.twig' %}
+
+{% block menu %}
+    {% include '_menu.html.twig' with {'active' : 'cart'} %}
+{% endblock %}
+
+{% block body %}
+<section class="mdl-grid mdl-own-size">
+    <div class="mdl-cell mdl-cell--4-col mdl-cell--order-2-desktop mdl-cell--12-col-tablet">
+        <div class="mdl-card cart-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">
+                    Total ({{ basket.items|length }} articles): {{ basket.total }}&nbsp;&euro;
+                </h2>
+            </div>
+            <div class="mdl-card__actions mdl-typography--text-center">
+                <a href="{{ path('contribution_checkout') }}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                    Confirmer ma participation
+                </a>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <p>Vous vous êtes trompés ? <br /><a href="/contribution/cancel">Effacez votre participation</a> et recommencez.</p>
+            </div>
+        </div>
+    </div>
+    <div class="mdl-cell mdl-cell--8-col mdl-cell--12-col-tablet mdl-cell--order-1-desktop">
+        <h2 class="mdl-typography--display-1 mdl-color-text--primary">Votre participation</h2>
+        <table class="mdl-data-table cart-table">
+            <thead>
+                <tr>
+                    <th class="mdl-data-table__cell--non-numeric"></th>
+                    <th class="mdl-data-table__cell--non-numeric"></th>
+                    <th>Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in basket.items %}
+                <tr>
+                    <td class="mdl-data-table__cell--non-numeric">
+                        <img src="{{ item.image }}" />
+                    </td>
+                    <td class="mdl-data-table__cell--non-numeric">
+                        <div class="mdl-typography--title">{{ item.name }}</div>
+                        <!-- <p>
+                            <a href="#">Supprimer</a>
+                        </p> -->
+                    </td>
+                    <td>
+                        <span class="mdl-typography--title">{{ item.amount|number_format(2, ',', ' ') }}&nbsp;&euro;</span>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

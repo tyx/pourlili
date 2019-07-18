@@ -1,0 +1,175 @@
+{% extends 'layout.html.twig' %}
+
+{% block menu %}
+    {% include '_menu.html.twig' with {'active' : 'product'} %}
+{% endblock %}
+
+{% block body %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazyloadjs/3.2.2/lazyload.min.js"></script>
+    <div class="mdl-color--red-100">
+        <div class="jumbo mdl-own-size">
+            <h2 class="mdl-typography--display-1 mdl-typography--font-thin">En route pour l'aventure</h2>
+            <p class="mdl-typography--headline mdl-typography--font-thin">
+                Nous avons déjà récupéré beaucoup de choses ! Merci encore à tous. <br />
+                Pour compléter vous pouvez nous aider en <a href="#products">choisissant un cadeau</a> de la liste ci-dessous !<br /> Marcel vous fera une dédicace en échange !
+            </p>
+            <p class="mdl-typography--headline mdl-typography--text-right">
+                A2 &amp; Tim
+            </p>
+        </div>
+    </div>
+    <section class="mdl-grid mdl-own-size" id="products">
+        <div class="mdl-cell mdl-cell--12-col mdl-color-text--grey-700 infobox">
+            <h2 class="mdl-color-text--primary mdl-typography--display-1">
+                <i class="material-icons">feedback</i>  Bon à savoir
+            </h2>
+            <p>Vous pouvez choisir le montant de votre participation quel que soit le produit que vous souhaitez offrir.</p>
+        </div>
+        {% for product in products %}
+            <div class="mdl-cell mdl-cell--4-col mdl-color-text--grey-700">
+                <div class="list-card mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__media mdl-card--border">
+                        <img
+                          data-src="{{ product.image }}"
+                          src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                          onload="lzld(this)">
+                    </div>
+                    <div class="mdl-card__title mdl-card--expand">
+                        <h2 class="mdl-card__title-text mdl-color-text--primary">{{ product.name }}</h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <p>{{ product.description }}</p>
+                        {% if product.price and 0 < product.alreadyCollected %}
+                            Déjà {{ product.alreadyCollected }}&nbsp;€ récoltés
+                                <div class="mdl-progress mdl-js-progress is-upgraded">
+                                <div style="width: {{ product.progression }}%;" class="progressbar bar bar1"></div><div style="width: 100%;" class="bufferbar bar bar2"></div>
+                                </div>
+                        {% endif %}
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <button data-id="{{ product.id }}" data-amount="{{ product.remainingAmountToCollect }}" class="mdl-button mdl-button--colored mdl-js-button" data-target="#dialog" data-disable-scroll="true">
+                            <i class="material-icons">add_shopping_cart</i> Participer
+                        </button>
+                    </div>
+                    {% if product.price %}
+                        <div class="mdl-card__menu mdl-color--red-200 mdl-color-text--grey-100">
+                            <span class="mdl-typography--title">{{ product.price|number_format(2, ',', ' ') }}&nbsp;&euro;</span>
+                        </div>
+                    {% endif %}
+                    {% if product.funded %}
+                        <div class="mdl-layout__obfuscator is-visible">
+                            <h3 class="mdl-typography--headline" style="color: #F3F3F3; text-align: center; margin-top: 150px">Offert</h3>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+    <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
+        <div class="mdl-snackbar__text">Ajouté au panier</div>
+        <a class="mdl-snackbar__action" type="button">Voir</a>
+    </div>
+    <div id="dialog" class="mdl-dialog mdl-color--grey-100">
+        <form method="get" action="{{ path('basket_add') }}">
+        <h4 class="mdl-dialog__title">D'un montant de ?</h4>
+        <div class="mdl-dialog__content">
+            <div class="mdl-textfield mdl-js-textfield money-textfield">
+                <i class="material-icons">euro_symbol</i>
+                <input class="mdl-textfield__input" required="required" type="number" pattern="[0-9]+([\.,][0-9]+)?" step="0.01" id="amount-contribution" lang="fr">
+            </div>
+            <div style="text-align: center">
+                <div class="mdl-spinner mdl-js-spinner"></div>
+            </div>
+        </div>
+        <div class="mdl-dialog__actions">
+            <button type="submit" class="mdl-button mdl-button--accent mdl-js-button add-shopping-cart">Valider</button>
+            <button type="button" class="mdl-button mdl-button--accent mdl-js-button modal-close-btn">Annuler</button>
+        </div>
+        </form>
+    </div>
+<script>
+(function() {
+    'use strict';
+    var snackbarContainer = document.querySelector('#snackbar');
+    var snackHandler = function (event) {
+        document.location.href = "/cart"
+    };
+    var dialog = document.querySelector('#dialog');
+    var contributionForm = document.querySelector('#dialog form');
+    function closeShowingModal(liked) {
+        var showingModal = document.querySelector('.mdl-dialog.show');
+        if (!showingModal) return;
+        showingModal.classList.remove('show');
+        document.body.classList.remove('disable-mouse');
+        document.body.classList.remove('disable-scroll');
+        var textField = dialog.querySelector('.mdl-textfield');
+        var dialogActions = dialog.querySelector('.mdl-dialog__actions');
+        var spinner = dialog.querySelector('.mdl-spinner');
+        textField.classList.remove('hidden');
+        dialogActions.classList.remove('hidden');
+        spinner.classList.remove('is-active');
+    }
+    document.addEventListener('click', function (e) {
+        var target = e.target;
+        if (target.dataset.target) {
+            var modal = document.querySelector(target.dataset.target);
+            var inputText = contributionForm.querySelector('#amount-contribution');
+            contributionForm.dataset.id = target.dataset.id;
+            inputText.value = target.dataset.amount;
+            modal.classList.add('show');
+            document.body.classList.add('disable-mouse');
+            if (target.dataset.disableScroll) {
+                document.body.classList.add('disable-scroll');
+            }
+        }
+        else if (target.classList.contains('modal-close-btn')) {
+            closeShowingModal();
+        }
+    });
+    document.addEventListener('keyup', function (e) {
+        if (e.which === 27) {
+            closeShowingModal();
+        }
+    });
+    contributionForm.addEventListener('submit', function (e) {
+        'use strict';
+        e.target.focus();
+        e.preventDefault();
+        var textField = dialog.querySelector('.mdl-textfield');
+        var spinner = dialog.querySelector('.mdl-spinner');
+        var dialogActions = dialog.querySelector('.mdl-dialog__actions');
+        textField.classList.add('hidden');
+        dialogActions.classList.add('hidden');
+        spinner.classList.add('is-active');
+        var amountContribution = e.target.querySelector('#amount-contribution');
+        amountContribution.blur();
+        reqwest({
+            url: e.target.getAttribute('action'),
+            method: 'post',
+            data: [{ name: 'product_id', value: e.target.dataset.id }, { name: 'amount', value: amountContribution.value }],
+            type: 'json',
+        })
+            .then(function (resp) {
+                var data = {
+                    message: 'Ajouté au panier',
+                    timeout: 5000,
+                    actionHandler: snackHandler,
+                    actionText: 'Voir'
+                };
+                snackbarContainer.MaterialSnackbar.showSnackbar(data);
+            })
+            .fail(function (err, msg) {
+                var data = {
+                    message: 'Une erreur est survenue',
+                    timeout: 3000
+                };
+                snackbarContainer.MaterialSnackbar.showSnackbar(data);
+            })
+            .always(function () {
+                closeShowingModal();
+            })
+        ;
+    });
+}());
+</script>
+{% endblock %}

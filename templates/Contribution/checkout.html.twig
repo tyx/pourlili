@@ -1,0 +1,38 @@
+{% extends 'layout.html.twig' %}
+
+{% block menu %}
+    {% include '_menu.html.twig' with {'active' : 'cart'} %}
+{% endblock %}
+
+{% block body %}
+<section class="mdl-grid mdl-own-size">
+    <div class="mdl-cell mdl-cell--12-col">
+        <h2 class="mdl-typography--display-1 mdl-color-text--primary">Dernière étape</h2>
+        <p class="mdl-typography--headline mdl-typography--font-thin">
+            Après nous avoir laissé un petit mot et validé, <b>vous serez redirigés</b> vers une plateforme de paiement. <b>Pas d'inquiétude donc</b> !
+        </p>
+        <div class="list-card mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__supporting-text mdl-card--border">
+                {{ form_start(form, {'attr': {'class': 'form-participation'}}) }}
+                    <h3 class="mdl-typography--title">Montant de votre participation : </h3>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        {{ form_widget(form.email, {'attr': {'class': 'mdl-textfield__input'}}) }}
+                        {{ form_label(form.email, 'Adresse email', {'label_attr': {'class': 'mdl-textfield__label'}}) }}
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        {{ form_widget(form.signature, {'attr': {'class': 'mdl-textfield__input'}}) }}
+                        {{ form_label(form.signature, 'De la part de', {'label_attr': {'class': 'mdl-textfield__label'}}) }}
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        {{ form_widget(form.message, {'attr': {'class': 'mdl-textfield__input', 'rows': '10'}}) }}
+                        {{ form_label(form.message, 'Laissez-nous un petit mot', {'label_attr': {'class': 'mdl-textfield__label'}}) }}
+                    </div>
+                    <div style="text-align: right">
+                        {{ form_widget(form.save, {'label': 'Participer', 'attr': {'class': 'mdl-button mdl-button--accent mdl-js-button mdl-button--raised'}}) }}
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

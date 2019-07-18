@@ -7,9 +7,14 @@ use Prooph\EventSourcing\AggregateChanged;
 
 class ProductWasRegistered extends AggregateChanged
 {
-    public static function record(string $aggregateId, string $name, float $price, string $description): self
+    public static function record(string $aggregateId, string $productId, string $name, float $price, string $description): self
     {
-        return new static($aggregateId, ['name' => $name, 'price' => $price, 'description' => $description]);
+        return new static($aggregateId, ['id' => $productId, 'name' => $name, 'price' => $price, 'description' => $description]);
+    }
+
+    public function id(): string
+    {
+        return $this->payload['id'];
     }
 
     public function name(): string
@@ -19,7 +24,7 @@ class ProductWasRegistered extends AggregateChanged
 
     public function price(): float
     {
-        return $this->payload['price'];
+        return (float) $this->payload['price'];
     }
 
     public function description(): string

@@ -1,0 +1,187 @@
+html, body {
+    font-family: 'Roboto', 'Helvetica', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+p {
+    font-size: 16px;
+}
+.mdl-layout-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 4em;
+    line-height: 1.5em;
+}
+.mdl-own-size {
+    max-width: 1120px;
+    margin: 0 auto;
+}
+.mdl-own .mdl-layout__header-row {
+    height: auto;
+}
+.mdl-own .mdl-layout__header.is-compact {
+    max-height: none;
+    min-height: initial;
+}
+.mdl-layout:not(.is-small-screen) header .mdl-layout__tab-bar-container {
+    display:none
+}
+.mdl-layout.is-small-screen .is-compact .mdl-layout__header-row {
+    display: none;
+}
+.mdl-own .mdl-layout__tab-bar {
+    padding: 0;
+    padding-left: 16px;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+.mdl-own .mdl-layout__tab-bar-button {
+    display: none;
+}
+.form-participation .mdl-textfield {
+    width: 100%;
+}
+.form-participation .money-textfield {
+    width: 50%;
+}
+.money-textfield input {
+    display: inline-block;
+}
+.money-textfield .material-icons {
+    position: absolute;
+    right: 0;
+    bottom: 20px;
+}
+.bank-card > .mdl-card__title {
+    background: url('/img/piggy.jpg') right / contain no-repeat;
+}
+.jumbo {
+    margin: auto;
+    padding: 2em;
+    color: #F3F3F3;
+}
+.mdl-own .mdl-card {
+    width: 100%;
+}
+.list-card .mdl-card__menu {
+    padding: 5px;
+    border-radius: 5px;
+}
+.list-card .mdl-card__media {
+    text-align: center;
+    min-height: 300px;
+    line-height: 300px;
+    background: transparent;
+}
+.list-card .mdl-card__media img {
+    max-width: 100%;
+    max-height: 300px;
+    vertical-align: middle;
+}
+.is-small-screen .list-card .mdl-card__media {
+    min-height: 200px;
+    line-height: 200px;
+}
+.is-small-screen .list-card .mdl-card__media img {
+    max-height: 200px;
+}
+.list-card .mdl-card__supporting-text {
+    min-height: 86px;
+}
+@media screen and (max-width:840px) {
+    .mdl-layout-title {
+        font-size: 2em;
+    }
+    .mdl-typography--display-1 {
+        font-size: 2.2em;
+    }
+    .mdl-typography--headline {
+        font-size: 1.3em;
+    }
+    .mdl-own .mdl-layout__header-row {
+        padding: 0;
+    }
+    .mdl-layout-title {
+        margin: 0 auto;
+    }
+}
+.mdl-dialog {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    top: 30%;
+    bottom: auto;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: 100ms ease;
+    overflow: auto;
+    transform: translateX(-50%);
+    box-shadow: 0 0 0 3000px rgba(0,0,0,0.4);
+}
+.mdl-dialog.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+body.disable-scroll {
+    overflow: hidden;
+    height: 100%;
+}
+.disable-mouse {
+    pointer-events: none;
+}
+.money-textfield input {
+    display: inline-block;
+    font-size: 36px;
+}
+.money-textfield .material-icons {
+    position: absolute;
+    right: 0;
+    bottom: 20px;
+    font-size: 45px;
+}
+.howto-card .mdl-card__title-text,
+.howto-card .mdl-list__item-primary-content {
+    color: #FFF !important;
+}
+#main {
+    font-size: 1.3em;
+    color: #FFF;
+    width: 500px;
+    position: absolute;
+    height: 200px;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    margin: auto;
+}
+.cart-card {
+    border: 1px solid rgba(0,0,0,.12);
+    min-height: auto !important;
+    padding-bottom: 10px;
+}
+.cart-card h2 span {
+    display: block;
+}
+.cart-table tbody tr:hover {
+    background-color: transparent
+}
+.cart-table {
+    width: 100%;
+}
+.cart-table td {
+    vertical-align: top;
+}
+.cart-table td img {
+    width: 100%;
+    max-width: 300px;
+}
+.mdl-textfield__label {
+    font-size: 16px !important;
+}
+a.mdl-layout-title {
+    color: #FFF !important;
+    text-decoration: none !important;
+}

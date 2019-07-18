@@ -20,8 +20,29 @@
     "doctrine/instantiator": {
         "version": "1.2.0"
     },
+    "friends-of-behat/symfony-extension": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "78a2c7ae7f228ada6645d58e57cf919b180b7827"
+        },
+        "files": [
+            "behat.yml.dist",
+            "config/services_test.yaml",
+            "features/demo.feature",
+            "tests/Behat/DemoContext.php"
+        ]
+    },
     "marc-mabe/php-enum": {
         "version": "v4.1.0"
+    },
+    "ocramius/package-versions": {
+        "version": "1.4.0"
+    },
+    "ocramius/proxy-manager": {
+        "version": "2.2.2"
     },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
@@ -49,6 +70,22 @@
     },
     "prooph/event-store": {
         "version": "v7.5.4"
+    },
+    "prooph/event-store-symfony-bundle": {
+        "version": "0.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.4",
+            "ref": "54606aa996190da9a01cd533ad66a14a37d9b92b"
+        },
+        "files": [
+            "config/packages/prooph_event_store.yaml",
+            "src/Command/CreateEventStreamCommand.php"
+        ]
+    },
+    "prooph/standard-projections": {
+        "version": "v1.1.1"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -144,6 +181,9 @@
             ".env"
         ]
     },
+    "symfony/form": {
+        "version": "v4.3.3"
+    },
     "symfony/framework-bundle": {
         "version": "4.2",
         "recipe": {
@@ -163,14 +203,44 @@
             "src/Kernel.php"
         ]
     },
+    "symfony/http-client": {
+        "version": "v4.3.3"
+    },
+    "symfony/http-client-contracts": {
+        "version": "v1.1.5"
+    },
     "symfony/http-foundation": {
         "version": "v4.3.2"
     },
     "symfony/http-kernel": {
         "version": "v4.3.2"
     },
+    "symfony/inflector": {
+        "version": "v4.3.3"
+    },
+    "symfony/intl": {
+        "version": "v4.3.3"
+    },
+    "symfony/messenger": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "29716c100e8aef803ad72670deb3dc09bb052a64"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
+        ]
+    },
     "symfony/mime": {
         "version": "v4.3.2"
+    },
+    "symfony/options-resolver": {
+        "version": "v4.3.3"
+    },
+    "symfony/polyfill-intl-icu": {
+        "version": "v1.12.0"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.11.0"
@@ -185,6 +255,12 @@
         "version": "v1.11.0"
     },
     "symfony/process": {
+        "version": "v4.3.2"
+    },
+    "symfony/property-access": {
+        "version": "v4.3.3"
+    },
+    "symfony/proxy-manager-bridge": {
         "version": "v4.3.2"
     },
     "symfony/routing": {
@@ -205,6 +281,9 @@
     "symfony/service-contracts": {
         "version": "v1.1.5"
     },
+    "symfony/stopwatch": {
+        "version": "v4.3.3"
+    },
     "symfony/translation": {
         "version": "3.3",
         "recipe": {
@@ -224,11 +303,39 @@
     "symfony/twig-bridge": {
         "version": "v4.3.2"
     },
+    "symfony/twig-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "369b5b29dc52b2c190002825ae7ec24ab6f962dd"
+        },
+        "files": [
+            "config/packages/twig.yaml",
+            "config/routes/dev/twig.yaml",
+            "templates/base.html.twig"
+        ]
+    },
     "symfony/var-dumper": {
         "version": "v4.3.2"
     },
     "symfony/var-exporter": {
         "version": "v4.3.2"
+    },
+    "symfony/web-profiler-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "6bdfa1a95f6b2e677ab985cd1af2eae35d62e0f6"
+        },
+        "files": [
+            "config/packages/dev/web_profiler.yaml",
+            "config/packages/test/web_profiler.yaml",
+            "config/routes/dev/web_profiler.yaml"
+        ]
     },
     "symfony/yaml": {
         "version": "v4.3.2"
@@ -238,5 +345,11 @@
     },
     "webmozart/assert": {
         "version": "1.4.0"
+    },
+    "zendframework/zend-code": {
+        "version": "3.3.1"
+    },
+    "zendframework/zend-eventmanager": {
+        "version": "3.2.1"
     }
 }

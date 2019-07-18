@@ -6,9 +6,11 @@ use Prooph\EventSourcing\AggregateChanged;
 use Prooph\EventSourcing\AggregateRoot;
 use Ramsey\Uuid\Uuid;
 
-final class Product extends AggregateRoot
+final class Product 
 {
     private $id;
+
+    private $listId;
 
     private $name;
 
@@ -20,35 +22,25 @@ final class Product extends AggregateRoot
 
     private $alreadyCollected = 0;
 
-    public static function register(Uuid $id, string $name, float $price, string $imagePath, string $description)
+    public static function register(Uuid $listId, Uuid $id, string $name, float $price, string $imagePath, string $description)
     {
         $product = new self;
-        $product->recordThat(
-            ProductWasRegistered::record($id->toString(), $name,  $price, $description)
-        );
+        $product->id = $id;
+        $product->listId = $listId;
+        $product->name = $name;
+        $product->price = $price;
+        $product->description = $description;
 
         return $product;
     }
 
-    protected function aggregateId(): string
+    public function collect(float $amount)
     {
-        return $this->id->toString();
+        $this->alreadyCollected += $amount;
     }
 
-    protected function apply(AggregateChanged $event): void
+    public function id(): Uuid
     {
-        switch (get_class($event)) {
-            case ProductWasRegistered::class:
-                $this->whenProductWasRegistered($event);
-                break;
-        }
-    }
-
-    private function whenProductWasRegistered(ProductWasRegistered $change)
-    {
-        $this->id = Uuid::fromString($change->aggregateId());
-        $this->name = $change->name();
-        $this->price = $change->price();
-        $this->description = $change->description();
+        return $this->id;
     }
 }

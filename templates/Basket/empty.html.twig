@@ -1,0 +1,23 @@
+{% extends 'layout.html.twig' %}
+
+{% block menu %}
+    {% include '_menu.html.twig' with {'active' : 'cart'} %}
+{% endblock %}
+
+{% block body %}
+<section class="mdl-grid mdl-own-size">
+    <div class="mdl-cell mdl-cell--12-col">
+        <h2 class="mdl-typography--display-1">
+            Votre participation est vide pour le moment.
+        </h2>
+        <div style="min-height: 400px; padding-top: 50px">
+        <p>
+            Vous n'avez pas encore choisi de cadeaux à offrir ! Vous pouvez choisir le produit que vous préférez <a href="/">sur la liste</a> ou bien participer du montant de votre choix <a href="/">via la cagnotte</a>.
+        </p>
+        <p>
+            Ou vous avez juste envie de nous envoyer un petit mot gentil ? Vous pouvez nous <a href="mailto:tim+marcel@amicalement-web.net">envoyer un email</a> ca nous fera très plaisir aussi.
+        </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

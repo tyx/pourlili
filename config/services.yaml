@@ -4,24 +4,115 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    list_id: 'aecd62b6-a195-476a-994d-2cbfb0591336'
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $eventBus: '@event.bus'
+            $currentList: '%list_id%'
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php,*/Infra/Prooph*}'
 
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    # App\Controller\:
-    #     resource: '../src/Controller'
-    #     tags: ['controller.service_arguments']
+    App\SharedKernel\Infra\Persistence\FileSystemEventStore:
+        arguments:
+            - '%kernel.project_dir%/var/data/event-store'
+            - '@Prooph\Common\Messaging\FQCNMessageFactory'
+            - '@Prooph\Common\Messaging\NoOpMessageConverter'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Catalog\Domain\ProductListRepository:
+        alias: 'catalog'
+
+    App\Basket\Domain\BasketRepository:
+        alias: 'basket'
+
+    App\Contribution\Domain\ContributionRepository:
+        alias: 'contribution'
+
+    App\SharedKernel\Bridge\MessengerProophBridge:
+        tags:
+            - { name: 'prooph_event_store.plugin' }
+
+    App\SharedKernel\Projection\Projector:
+        arguments:
+            - '%kernel.project_dir%/var/data/projections'
+
+    App\SharedKernel\Bridge\QueryBus:
+        autowire: false
+        autoconfigure: false
+        arguments:
+            - '@query.bus'
+
+    App\SharedKernel\Bridge\CommandBus:
+        autowire: false
+        autoconfigure: false
+        arguments:
+            - '@command.bus'
+
+    # We want to retrict bus usage to dedicated query/command
+    query_handlers.catalog:
+        namespace: App\Catalog\App\Query\
+        resource: '%kernel.project_dir%/src/Catalog/App/Query/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: query.bus }
+
+    command_handlers.catalog:
+        namespace: App\Catalog\App\Command\
+        resource: '%kernel.project_dir%/src/Catalog/App/Command/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: command.bus }
+
+    query_handlers.basket:
+        namespace: App\Basket\App\Query\
+        resource: '%kernel.project_dir%/src/Basket/App/Query/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: query.bus }
+
+    command_handlers.basket:
+        namespace: App\Basket\App\Command\
+        resource: '%kernel.project_dir%/src/Basket/App/Command/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: command.bus }
+
+    command_handlers.contribution:
+        namespace: App\Contribution\App\Command\
+        resource: '%kernel.project_dir%/src/Contribution/App/Command/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: command.bus }
+
+    query_handlers.contribution:
+        namespace: App\Contribution\App\Query\
+        resource: '%kernel.project_dir%/src/Contribution/App/Query/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: query.bus }
+
+    controller.catalog:
+        namespace: App\Catalog\Ui\Controller\
+        resource: '%kernel.project_dir%/src/Catalog/Ui/Controller/*'
+        public: true
+        tags:
+            - 'controller.service_arguments'
+
+    controller.basket:
+        namespace: App\Basket\Ui\Controller\
+        resource: '%kernel.project_dir%/src/Basket/Ui/Controller/*'
+        public: true
+        tags:
+            - 'controller.service_arguments'
+
+    controller.contribution:
+        namespace: App\Contribution\Ui\Controller\
+        resource: '%kernel.project_dir%/src/Contribution/Ui/Controller/*'
+        public: true
+        tags:
+            - 'controller.service_arguments'
+
+    App\Contribution\Infra\Network\HttpLydiaPaymentGateway:
+        arguments:
+            $phone: "0711223344"
+            $debug: true
