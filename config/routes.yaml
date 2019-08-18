@@ -20,7 +20,6 @@ contribution_checkout:
 
 contribution_confirm:
    path: /confirm/{contributionId}
-   methods: [GET]
    controller: App\Contribution\Ui\Controller\ContributionController::confirm
 
 contribution_thanks:
