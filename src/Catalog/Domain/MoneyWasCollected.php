@@ -5,9 +5,9 @@ use Prooph\EventSourcing\AggregateChanged;
 
 class MoneyWasCollected extends AggregateChanged
 {
-    public function productId()
+    public function listId()
     {
-        return $this->payload['product_id'];
+        return $this->payload['list_id'];
     }
 
     public function amount()

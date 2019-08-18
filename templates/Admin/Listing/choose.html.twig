@@ -1,0 +1,18 @@
+{% extends "Admin/base.html.twig" %}
+
+{% block main %}
+    <form method="post">
+        <div class="mdc-select" data-mdc-auto-init="MDCSelect">
+            <i class="mdc-select__dropdown-icon"></i>
+            <select class="mdc-select__native-control" name="listId">
+                <option value="" disabled selected></option>
+                {% for list in lists.items %}
+                    <option value="{{ list.id }}">{{ list.host }}</option>
+                {% endfor %}
+            </select>
+            <label class="mdc-floating-label">Choisir une liste</label>
+            <div class="mdc-line-ripple"></div>
+        </div>
+        <button class="mdc-button mdc-button--unelevated" type="submit">Ok</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,23 @@
+listing_index:
+    path: /listing
+    controller: App\Listing\Ui\Controller\AdminController::index
+
+listing_new:
+    path: /listing/new
+    controller: App\Listing\Ui\Controller\AdminController::new
+
+listing_show:
+    path: /listing/{listId}
+    controller: App\Listing\Ui\Controller\AdminController::show
+
+product_new:
+    path: /listing/{listId}/new
+    controller: App\Catalog\Ui\Controller\AdminController::new
+
+listing_enable:
+    path: /listing/{listId}/enable
+    controller: App\Listing\Ui\Controller\AdminController::enable
+
+listing_disable:
+    path: /listing/{listId}/disable
+    controller: App\Listing\Ui\Controller\AdminController::disable

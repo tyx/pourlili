@@ -3,9 +3,14 @@ prooph_event_store:
         default:
             event_store: App\SharedKernel\Infra\Persistence\FileSystemEventStore
             repositories:
-                catalog:
-                    repository_class: App\Catalog\Infra\ProophProductListRepository
-                    aggregate_type: App\Catalog\Domain\ProductList
+                product:
+                    repository_class: App\Catalog\Infra\ProophProductRepository
+                    aggregate_type: App\Catalog\Domain\Product
+                    aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
+                    one_stream_per_aggregate: true
+                listing:
+                    repository_class: App\Listing\Infra\ProophProductListRepository
+                    aggregate_type: App\Listing\Domain\ProductList
                     aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
                     one_stream_per_aggregate: true
                 basket:
@@ -18,12 +23,7 @@ prooph_event_store:
                     aggregate_type: App\Contribution\Domain\Contribution
                     aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
                     one_stream_per_aggregate: true
-    projection_managers:
-        catalog_projection_manager:
-            event_store: App\SharedKernel\Infra\Persistence\FileSystemEventStore
-            projections:
-                product_list_projection:
-                    projection: App\Catalog\Domain\ProductListProjection
+
 services:
     _defaults:
         public: false

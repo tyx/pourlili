@@ -23,11 +23,10 @@ class CollectMoneyWhenContributionConfirmed implements MessageSubscriberInterfac
     public function handleContributionWasConfirmed(ContributionWasConfirmed $event)
     {
         $basket = $this->projector->load($event->basketId(), 'basket_index')->state();
-        $listId = Uuid::fromString($basket['list_id']);
+
         foreach ($basket['items'] as $product) {
             $this->commandBus->execute(
                 new CollectMoneyForProduct(
-                    $listId,
                     Uuid::fromString(base64_decode($product['id'])),
                     $product['amount']
                 )

@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    list_id: 'aecd62b6-a195-476a-994d-2cbfb0591336'
+    env(CURRENT_LIST): ''
 
 services:
     # default configuration for services in *this* file
@@ -13,7 +13,7 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $eventBus: '@event.bus'
-            $currentList: '%list_id%'
+            $currentList: '%env(string:CURRENT_LIST)%'
 
     App\:
         resource: '../src/*'
@@ -25,8 +25,11 @@ services:
             - '@Prooph\Common\Messaging\FQCNMessageFactory'
             - '@Prooph\Common\Messaging\NoOpMessageConverter'
 
-    App\Catalog\Domain\ProductListRepository:
-        alias: 'catalog'
+    App\Catalog\Domain\ProductRepository:
+        alias: 'product'
+
+    App\Listing\Domain\ProductListRepository:
+        alias: 'listing'
 
     App\Basket\Domain\BasketRepository:
         alias: 'basket'
@@ -91,6 +94,18 @@ services:
         tags:
             - { name: messenger.message_handler, bus: query.bus }
 
+    query_handlers.listing:
+        namespace: App\Listing\App\Query\
+        resource: '%kernel.project_dir%/src/Listing/App/Query/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: query.bus }
+
+    command_handlers.listing:
+        namespace: App\Listing\App\Command\
+        resource: '%kernel.project_dir%/src/Listing/App/Command/*Handler.php'
+        tags:
+            - { name: messenger.message_handler, bus: command.bus }
+
     controller.catalog:
         namespace: App\Catalog\Ui\Controller\
         resource: '%kernel.project_dir%/src/Catalog/Ui/Controller/*'
@@ -108,6 +123,13 @@ services:
     controller.contribution:
         namespace: App\Contribution\Ui\Controller\
         resource: '%kernel.project_dir%/src/Contribution/Ui/Controller/*'
+        public: true
+        tags:
+            - 'controller.service_arguments'
+
+    controller.listing:
+        namespace: App\Listing\Ui\Controller\
+        resource: '%kernel.project_dir%/src/Listing/Ui/Controller/*'
         public: true
         tags:
             - 'controller.service_arguments'

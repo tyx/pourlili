@@ -27,3 +27,15 @@ contribution_thanks:
    path: /thanks
    methods: [GET]
    controller: App\Contribution\Ui\Controller\ContributionController::thanks
+
+waiting:
+   path: /waiting.html
+   controller:   Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+   defaults:
+      template: waiting.html.twig
+   methods: GET
+
+bo:
+   resource: routes_admin.yaml
+   name_prefix: admin_
+   prefix: /bo

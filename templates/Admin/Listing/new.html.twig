@@ -1,0 +1,22 @@
+{% extends "Admin/base.html.twig" %}
+
+{% block main %}
+    <h2>Commencer une nouvelle list</h2>
+    {{ form_start(form) }}
+    <div>
+        <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+            {{ form_widget(form.host, { attr: { class: "mdc-text-field__input" }}) }}
+            <div class="mdc-notched-outline">
+                <div class="mdc-notched-outline__leading"></div>
+                <div class="mdc-notched-outline__notch">{{ form_label(form.host, null, { label_attr: { class: "mdc-floating-label" }}) }}</div>
+                <div class="mdc-notched-outline__trailing"></div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button class="mdc-button mdc-button--unelevated" type="submit">Commencer</button>
+    </div>
+
+    {{ form_end(form) }}
+{% endblock %}

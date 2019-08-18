@@ -15,9 +15,9 @@ class Projector
         $this->rootDir = $rootDir;
     }
 
-    public function updateProjection(string $projectionName, AggregateChanged $event, callable $updator)
+    public function updateProjection(string $projectionName, AggregateChanged $event, callable $updator, ?string $aggregateId = null)
     {
-        $projection = $this->load($event->aggregateId(), $projectionName);
+        $projection = $this->load($aggregateId ?? $event->aggregateId(), $projectionName);
         $projection->update($event, $updator);
         $this->save($projection);
     }

@@ -28,7 +28,7 @@ class ProductListProjection implements MessageSubscriberInterface
                 $state['items'] = $state['items'] ?? [];
 
                 $state['items'][] = [
-                    'id' => base64_encode($event->id()),
+                    'id' => base64_encode($event->aggregateId()),
                     'name' => $event->name(),
                     'price' => $event->price(),
                     'image' => '',
@@ -36,10 +36,12 @@ class ProductListProjection implements MessageSubscriberInterface
                     'funded' => false,
                     'alreadyCollected' => 0,
                     'remainingAmountToCollect' => $event->price(),
+                    'progression' => 0,
                 ];
 
                 return $state;
-            }
+            },
+            $event->listId()
         );
     }
 
@@ -54,7 +56,7 @@ class ProductListProjection implements MessageSubscriberInterface
                         if ($item['id'] === base64_encode($event->productId())) {
                             $item['alreadyCollected'] += $event->amount();
                             $item['remainingAmountToCollect'] -= $event->amount();
-                            $item['progression'] = round($item['alreadyCollected'] / $item['price']) * 100;
+                            $item['progression'] = round($item['alreadyCollected'] / $item['price']);
                         }
 
                         if ($item['price'] <= $item['alreadyCollected']) {

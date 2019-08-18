@@ -6,6 +6,9 @@ html, body {
 p {
     font-size: 16px;
 }
+a {
+    color: #bdbdbd;
+}
 .mdl-layout-title {
     font-family: 'Pacifico', cursive;
     font-size: 4em;

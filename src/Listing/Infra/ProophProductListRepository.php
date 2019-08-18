@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Catalog\Infra;
+namespace App\Listing\Infra;
 
-use App\Catalog\Domain\ProductList;
-use App\Catalog\Domain\ProductListRepository;
+use App\Listing\Domain\ProductList;
+use App\Listing\Domain\ProductListRepository;
 use Prooph\EventSourcing\Aggregate\AggregateRepository;
 use Ramsey\Uuid\Uuid;
 

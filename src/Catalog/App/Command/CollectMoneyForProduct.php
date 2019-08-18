@@ -5,22 +5,14 @@ use Ramsey\Uuid\Uuid;
 
 class CollectMoneyForProduct
 {
-    private $listId;
-
     private $productId;
 
     private $amount;
 
-    public function __construct(Uuid $listId, Uuid $productId, float $amount)
+    public function __construct(Uuid $productId, float $amount)
     {
-        $this->listId = $listId;
         $this->productId = $productId;
         $this->amount = $amount;
-    }
-
-    public function listId(): Uuid
-    {
-        return $this->listId;
     }
 
     public function productId(): Uuid

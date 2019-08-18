@@ -1,26 +1,26 @@
 <?php
 namespace App\Catalog\App\Command;
 
-use App\Catalog\Domain\ProductListRepository;
+use App\Catalog\Domain\ProductRepository;
 
 class CollectMoneyForProductHandler
 {
-    private $productListRepository;
+    private $productRepository;
 
-    public function __construct(ProductListRepository $productListRepository)
+    public function __construct(ProductRepository $productRepository)
     {
-        $this->productListRepository = $productListRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function __invoke(CollectMoneyForProduct $command)
     {
-        $productList = $this->productListRepository->find($command->listId());
+        $product = $this->productRepository->find($command->productId()());
 
-        if (null === $productList) {
-            throw new \LogicException("No list with id {$command->listId()}");
+        if (null === $product) {
+            throw new \LogicException("No product with id {$command->productId()}");
         }
 
-        $productList->collect($command->productId(), $command->amount());
-        $this->productListRepository->save($productList);
+        $product->collect($command->amount());
+        $this->productRepository->save($product);
     }
 }

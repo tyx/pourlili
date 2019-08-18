@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta content="ie=edge" http-equiv="x-ua-compatible">
+        <title>Pour Lili, liste de naissance de Lili Barray</title>
+        <meta content="Liste de naissance de Adeline Thudo et Timothée Barray pour leur fille Lili Barray" name="description">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="/css/admin.css">
+    </head>
+    <body class="mdc-typography">
+        <header class="mdc-top-app-bar mdc-top-app-bar--dense">
+            <div class="mdc-top-app-bar__row">
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                    <button class="mdc-icon-button material-icons mdc-top-app-bar__navigation-icon--unbounded">menu</button>
+                    <span class="mdc-top-app-bar__title">Pour Lili</span>
+                </section>
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+                    <a class="mdc-button mdc-button--unelevated" href="{{ path('admin_listing_new') }}">
+                        <i class="material-icons">note_add</i>
+                        Nouvelle liste
+                    </a>
+                </section>
+            </div>
+        </header>
+        <main class="mdc-top-app-bar--fixed-adjust">
+            {% block main %}{% endblock %}
+        </main>
+        <script>
+            window.mdc.autoInit();
+        </script>
+    </body>
+</html>
