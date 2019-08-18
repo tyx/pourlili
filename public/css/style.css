@@ -6,7 +6,7 @@ html, body {
 p {
     font-size: 16px;
 }
-a {
+.jumbo a {
     color: #bdbdbd;
 }
 .mdl-layout-title {
