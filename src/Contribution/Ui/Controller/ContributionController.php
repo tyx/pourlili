@@ -1,6 +1,7 @@
 <?php
 namespace App\Contribution\Ui\Controller;
 
+use App\Basket\App\Query\ShowBasket;
 use App\Contribution\App\Command\ConfirmContribution;
 use App\Contribution\App\Command\ContributeToList;
 use App\Contribution\App\Query\PaymentUrlOfContribution;
@@ -48,12 +49,14 @@ class ContributionController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $contributionId = Uuid::uuid4();
+            $basket = $this->queryBus->query(new ShowBasket($basketId));
+
             $this->commandBus->execute(
                 new ContributeToList(
                     $contributionId,
                     $currentList,
                     $basketId,
-                    2, // Need to add amount in form
+                    $basket['total'],
                     $data['email'],
                     $data['signature'],
                     $data['message']
