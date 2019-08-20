@@ -25,33 +25,19 @@
     </div>
     <div class="mdl-cell mdl-cell--8-col mdl-cell--12-col-tablet mdl-cell--order-1-desktop">
         <h2 class="mdl-typography--display-1 mdl-color-text--primary">Votre participation</h2>
-        <table class="mdl-data-table cart-table">
-            <thead>
-                <tr>
-                    <th class="mdl-data-table__cell--non-numeric"></th>
-                    <th class="mdl-data-table__cell--non-numeric"></th>
-                    <th>Montant</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="basket-list-action mdl-list">
             {% for item in basket.items %}
-                <tr>
-                    <td class="mdl-data-table__cell--non-numeric">
-                        <img src="{{ item.image }}" />
-                    </td>
-                    <td class="mdl-data-table__cell--non-numeric">
-                        <div class="mdl-typography--title">{{ item.name }}</div>
-                        <!-- <p>
-                            <a href="#">Supprimer</a>
-                        </p> -->
-                    </td>
-                    <td>
-                        <span class="mdl-typography--title">{{ item.amount|number_format(2, ',', ' ') }}&nbsp;&euro;</span>
-                    </td>
-                </tr>
+                <div class="mdl-list__item mdl-list__item--three-line">
+                    <span class="mdl-list__item-primary-content">
+                        <img class="mdl-list__item-avatar" src="{{ item.image }}" />
+                        <span class="mdl-list__item-text-body">{{ item.name }}</span>
+                    </span>
+                    <span class="mdl-list__item-secondary-action" href="#">
+                        {{ item.amount|number_format(2, ',', ' ') }}&nbsp;&euro;
+                    </span>
+                </div>
             {% endfor %}
-            </tbody>
-        </table>
+        </div>
     </div>
 </section>
 {% endblock %}

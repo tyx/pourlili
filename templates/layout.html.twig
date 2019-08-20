@@ -28,9 +28,11 @@
                     {{ block('menu') }}
                 </div>
             </header>
-            <main class="mdl-layout__content">
-                {% block body %}{% endblock %}
-                <footer class="mdl-mini-footer">
+            <main class="layout-content mdl-layout__content">
+                <div class="own-content">
+                    {% block body %}{% endblock %}
+                </div>
+                <footer class="mdl-mini-footer mini-footer">
                     <div class="mdl-mini-footer__left-section">
                         <div class="mdl-logo">pourlili.com</div>
                     </div>
