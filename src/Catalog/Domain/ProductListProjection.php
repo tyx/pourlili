@@ -31,7 +31,7 @@ class ProductListProjection implements MessageSubscriberInterface
                     'id' => base64_encode($event->aggregateId()),
                     'name' => $event->name(),
                     'price' => $event->price(),
-                    'image' => '',
+                    'image' => $event->imagePath(),
                     'description' => $event->description(),
                     'funded' => false,
                     'alreadyCollected' => 0,

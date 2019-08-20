@@ -35,7 +35,7 @@ class CurrentListListener implements EventSubscriberInterface
         $request = $event->getRequest();
         $routeName = $request->attributes->get('_route');
 
-        if ('waiting' === $routeName || 0 === strpos($routeName, 'admin_')) {
+        if ('waiting' === $routeName || 0 === strpos($routeName, 'admin_') || 0 === strpos($routeName, '_')) {
             return;
         }
 

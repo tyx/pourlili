@@ -1,5 +1,8 @@
 framework:
     messenger:
+        failure_transport: failed
+        transports:
+            failed: 'sync://'
         default_bus: command.bus
         buses:
             command.bus: ~

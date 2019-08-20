@@ -1,4 +1,7 @@
 {
+    "aws/aws-sdk-php": {
+        "version": "3.109.6"
+    },
     "beberlei/assert": {
         "version": "v3.2.1"
     },
@@ -35,8 +38,20 @@
             "tests/Behat/DemoContext.php"
         ]
     },
+    "guzzlehttp/guzzle": {
+        "version": "6.3.3"
+    },
+    "guzzlehttp/promises": {
+        "version": "v1.3.1"
+    },
+    "guzzlehttp/psr7": {
+        "version": "1.6.1"
+    },
     "marc-mabe/php-enum": {
         "version": "v4.1.0"
+    },
+    "mtdowling/jmespath.php": {
+        "version": "2.4.0"
     },
     "ocramius/package-versions": {
         "version": "1.4.0"
@@ -93,8 +108,14 @@
     "psr/container": {
         "version": "1.0.0"
     },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/log": {
         "version": "1.1.0"
+    },
+    "ralouphie/getallheaders": {
+        "version": "3.0.3"
     },
     "ramsey/uuid": {
         "version": "3.8.0"

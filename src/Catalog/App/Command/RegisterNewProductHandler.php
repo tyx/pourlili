@@ -22,7 +22,8 @@ class RegisterNewProductHandler
             $command->listId(),
             $command->name(),
             $command->price(),
-            $command->description()
+            $command->description(),
+            $command->image()
         );
         $this->productRepository->save($product);
     }

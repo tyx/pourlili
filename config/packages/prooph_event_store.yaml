@@ -8,21 +8,25 @@ prooph_event_store:
                     aggregate_type: App\Catalog\Domain\Product
                     aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
                     one_stream_per_aggregate: true
+                    stream_name: product
                 listing:
                     repository_class: App\Listing\Infra\ProophProductListRepository
                     aggregate_type: App\Listing\Domain\ProductList
                     aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
                     one_stream_per_aggregate: true
+                    stream_name: listing
                 basket:
                     repository_class: App\Basket\Infra\ProophBasketRepository
                     aggregate_type: App\Basket\Domain\Basket
                     aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
                     one_stream_per_aggregate: true
+                    stream_name: basket
                 contribution:
                     repository_class: App\Contribution\Infra\ProophContributionRepository
                     aggregate_type: App\Contribution\Domain\Contribution
                     aggregate_translator: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
                     one_stream_per_aggregate: true
+                    stream_name: contribution
 
 services:
     _defaults:

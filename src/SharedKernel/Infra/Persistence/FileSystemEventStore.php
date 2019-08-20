@@ -3,12 +3,8 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Infra\Persistence;
 
-use ArrayIterator;
-use DateTimeInterface;
+use Aws\S3\S3Client;
 use Iterator;
-use JamesMoss\Flywheel\Config;
-use JamesMoss\Flywheel\Document;
-use JamesMoss\Flywheel\Repository;
 use Prooph\Common\Messaging\Message;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\Common\Messaging\MessageDataAssertion;
@@ -41,8 +37,9 @@ class FileSystemEventStore implements EventStore
      * @param MessageFactory   $messageFactory   To create message from array
      * @param MessageConverter $messageConverter To convert message into array
      */
-    public function __construct($rootDir, MessageFactory $messageFactory, MessageConverter $messageConverter)
+    public function __construct($rootDir, MessageFactory $messageFactory, MessageConverter $messageConverter, S3Client $s3)
     {
+        $s3->registerStreamWrapper();
         $this->rootDir = $rootDir;
         $this->messageFactory = $messageFactory;
         $this->messageConverter = $messageConverter;
@@ -77,12 +74,7 @@ class FileSystemEventStore implements EventStore
 
         $fp = fopen($path, 'a');
 
-        if (false == flock($fp, LOCK_EX)) {
-            throw new \LogicException('Cannot lock eventStore');
-        }
-
         $result = fwrite($fp, $contents);
-        flock($fp, LOCK_UN);
         fclose($fp);
 
         if ($result === false) {
@@ -201,13 +193,14 @@ class FileSystemEventStore implements EventStore
 
     private function buildPath(string $streamName): string
     {
+        $prefix = strstr($streamName, '-', true);
         $streamNameHashed = sha1($streamName);
 
         return
-            $this->rootDir.'/'.
+            "{$this->rootDir}/{$prefix}/".
             substr($streamNameHashed, 0, 2).'/'.
             substr($streamNameHashed, 2, 2).'/'.
-            $streamNameHashed
+            $streamName
         ;
     }
 }

@@ -5,14 +5,16 @@ namespace App\SharedKernel\Projection;
 
 use Prooph\EventSourcing\AggregateChanged;
 use App\SharedKernel\Projection\Projection;
+use Aws\S3\S3Client;
 
 class Projector
 {
     private $rootDir;
 
-    public function __construct(string $rootDir)
+    public function __construct(string $rootDir, S3Client $s3)
     {
         $this->rootDir = $rootDir;
+        $s3->registerStreamWrapper();
     }
 
     public function updateProjection(string $projectionName, AggregateChanged $event, callable $updator, ?string $aggregateId = null)
@@ -46,13 +48,7 @@ class Projector
         }
 
         $fp = fopen($path, 'w');
-
-        if (false == flock($fp, LOCK_EX)) {
-            throw new \LogicException('Cannot lock eventStore');
-        }
-
         $result = fwrite($fp, json_encode($projection->state()));
-        flock($fp, LOCK_UN);
         fclose($fp);
 
         if ($result === false) {
@@ -65,10 +61,10 @@ class Projector
         $streamNameHashed = sha1($projection->aggregateId());
 
         return
-            $this->rootDir.'/'.
+            "{$this->rootDir}/{$projection->name()}/".
             substr($streamNameHashed, 0, 2).'/'.
             substr($streamNameHashed, 2, 2).'/'.
-            $projection->name().'_'.$streamNameHashed
+            $projection->aggregateId().'.json'
         ;
     }
 }

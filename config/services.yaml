@@ -5,6 +5,8 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     env(CURRENT_LIST): ''
+    eventstore.root_dir: 's3://event-store-pourlili'
+    projection.root_dir: 's3://projection-pourlili'
 
 services:
     # default configuration for services in *this* file
@@ -21,7 +23,7 @@ services:
 
     App\SharedKernel\Infra\Persistence\FileSystemEventStore:
         arguments:
-            - '%kernel.project_dir%/var/data/event-store'
+            - '%eventstore.root_dir%'
             - '@Prooph\Common\Messaging\FQCNMessageFactory'
             - '@Prooph\Common\Messaging\NoOpMessageConverter'
 
@@ -43,7 +45,7 @@ services:
 
     App\SharedKernel\Projection\Projector:
         arguments:
-            - '%kernel.project_dir%/var/data/projections'
+            - '%projection.root_dir%'
 
     App\SharedKernel\Bridge\QueryBus:
         autowire: false
@@ -138,3 +140,12 @@ services:
         arguments:
             $phone: "0711223344"
             $debug: true
+
+    Aws\S3\S3Client:
+        arguments:
+            -
+                version: latest
+                region: eu-west-3
+                credentials:
+                    key: '%env(AWS_ACCESS_KEY_ID)%'
+                    secret: '%env(AWS_SECRET_ACCESS_KEY)%'

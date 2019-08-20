@@ -22,11 +22,11 @@ final class Product extends AggregateRoot
 
     private $alreadyCollected = 0;
 
-    public static function register(Uuid $id, Uuid $listId, string $name, float $price, string $description)
+    public static function register(Uuid $id, Uuid $listId, string $name, float $price, string $description, ?string $imagePath)
     {
         $self = new static;
         $self->recordThat(
-            ProductWasRegistered::record($id->toString(), $listId->toString(), $name, $price, $description)
+            ProductWasRegistered::record($id->toString(), $listId->toString(), $name, $price, $description, $imagePath)
         );
 
         return $self;
@@ -36,6 +36,13 @@ final class Product extends AggregateRoot
     {
         $this->recordThat(
             MoneyWasCollected::occur($this->aggregateId(), ['amount' => $amount, 'list_id' => $this->listId->toString()])
+        );
+    }
+
+    public function uploadImage(string $path)
+    {
+        $this->recordThat(
+            ImageOfProductWasUploaded::occur($this->aggregateId(), ['path' => $path])
         );
     }
 
@@ -62,7 +69,7 @@ final class Product extends AggregateRoot
         $this->listId = Uuid::fromString($change->listId());
         $this->name = $change->name();
         $this->price = $change->price();
-        $this->imagePath = '';
+        $this->imagePath = $change->imagePath();
         $this->description = $change->description();
     }
 
