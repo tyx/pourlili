@@ -6,6 +6,17 @@ html, body {
 p {
     font-size: 16px;
 }
+.layout-content {
+    display: flex;
+    flex-direction: column;
+}
+.own-content {
+    flex: 1 0 auto;
+}
+.mini-footer {
+    flex-shrink: 0;
+    padding: 16px;
+}
 .jumbo a {
     color: #bdbdbd;
 }
@@ -149,17 +160,6 @@ body.disable-scroll {
 .howto-card .mdl-list__item-primary-content {
     color: #FFF !important;
 }
-#main {
-    font-size: 1.3em;
-    color: #FFF;
-    width: 500px;
-    position: absolute;
-    height: 200px;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    margin: auto;
-}
 .cart-card {
     border: 1px solid rgba(0,0,0,.12);
     min-height: auto !important;
@@ -168,18 +168,14 @@ body.disable-scroll {
 .cart-card h2 span {
     display: block;
 }
-.cart-table tbody tr:hover {
-    background-color: transparent
+.basket-list-action {
+    background: #FAFAFA;
 }
-.cart-table {
-    width: 100%;
+.mdl-list__item {
+    border-top: 1px solid rgba(0,0,0,.12);
 }
-.cart-table td {
-    vertical-align: top;
-}
-.cart-table td img {
-    width: 100%;
-    max-width: 300px;
+.mdl-list__item:first-child {
+    border-top: none;
 }
 .mdl-textfield__label {
     font-size: 16px !important;

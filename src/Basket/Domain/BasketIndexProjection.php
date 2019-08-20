@@ -49,7 +49,7 @@ class BasketIndexProjection implements MessageSubscriberInterface
                 $state['items'][] = [
                     'id' => $event->productId(),
                     'name' => $product['name'],
-                    'image' => '',
+                    'image' => $product['image'],
                     'amount' => $event->amountOfContribution(),
                 ];
 
