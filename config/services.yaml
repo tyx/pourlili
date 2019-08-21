@@ -5,6 +5,8 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     env(CURRENT_LIST): ''
+    env(LYDIA_PHONE): '0711223344'
+    env(LYDIA_DEBUG): true
     eventstore.root_dir: 's3://event-store-pourlili'
     projection.root_dir: 's3://projection-pourlili'
 
@@ -138,8 +140,8 @@ services:
 
     App\Contribution\Infra\Network\HttpLydiaPaymentGateway:
         arguments:
-            $phone: "0711223344"
-            $debug: true
+            $phone: '%env(string:LYDIA_PHONE)%'
+            $debug: '%env(bool:LYDIA_DEBUG)%'
 
     Aws\S3\S3Client:
         arguments:
