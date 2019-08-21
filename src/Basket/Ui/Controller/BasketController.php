@@ -2,16 +2,18 @@
 
 namespace App\Basket\Ui\Controller;
 
-use Twig\Environment;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Ramsey\Uuid\Uuid;
-use App\SharedKernel\Bridge\QueryBus;
-use App\SharedKernel\Bridge\CommandBus;
-use App\Basket\App\Query\ShowBasket;
 use App\Basket\App\Command;
+use App\Basket\App\Query\ShowBasket;
+use App\SharedKernel\Bridge\CommandBus;
+use App\SharedKernel\Bridge\QueryBus;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class BasketController
 {
@@ -59,7 +61,7 @@ class BasketController
         if (null !== $basketId) {
             $basketId = Uuid::fromString($basketId);
         }
-    
+
         if (null === $basketId) {
             $basketId = Uuid::uuid4();
             $this->commandBus->execute(
@@ -77,5 +79,30 @@ class BasketController
         );
 
         return new JsonResponse(['status' => 'ok']);
+    }
+
+    public function cancel(SessionInterface $session, RouterInterface $router)
+    {
+        $session->remove('basket_id');
+
+        return new RedirectResponse(
+            $router->generate('product_index')
+        );
+    }
+
+    public function thanks(SessionInterface $session)
+    {
+        if (null === $session->get('basket_id')) {
+            return new Response('Not found', Response::HTTP_NOT_FOUND);
+        }
+
+        $session->remove('basket_id');
+
+        return new Response(
+            $this->twig->render(
+                'Contribution/thanks.html.twig'
+            ),
+            Response::HTTP_OK
+        );
     }
 }

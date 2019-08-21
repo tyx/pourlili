@@ -8,10 +8,20 @@ basket_index:
    methods: [GET]
    controller: App\Basket\Ui\Controller\BasketController::index
 
+basket_cancel:
+   path: /cart/cancel
+   methods: [GET]
+   controller: App\Basket\Ui\Controller\BasketController::cancel
+
 basket_add:
    path: /cart
    methods: [POST]
    controller: App\Basket\Ui\Controller\BasketController::addProduct
+
+thanks:
+   path: /thanks
+   methods: [GET]
+   controller: App\Basket\Ui\Controller\BasketController::thanks
 
 contribution_checkout:
    path: /checkout
@@ -21,11 +31,6 @@ contribution_checkout:
 contribution_confirm:
    path: /confirm/{contributionId}
    controller: App\Contribution\Ui\Controller\ContributionController::confirm
-
-contribution_thanks:
-   path: /thanks
-   methods: [GET]
-   controller: App\Contribution\Ui\Controller\ContributionController::thanks
 
 waiting:
    path: /waiting.html

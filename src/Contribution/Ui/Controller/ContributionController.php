@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 
 class ContributionController
@@ -89,21 +90,5 @@ class ContributionController
         );
 
         return new JsonResponse(['status' => 'ok']);
-    }
-
-    public function thanks(SessionInterface $session)
-    {
-        if (null === $session->get('basket_id')) {
-            return new Response('Not found', Response::HTTP_NOT_FOUND);
-        }
-
-        $session->remove('basket_id');
-
-        return new Response(
-            $this->twig->render(
-                'Contribution/thanks.html.twig'
-            ),
-            Response::HTTP_OK
-        );
     }
 }
