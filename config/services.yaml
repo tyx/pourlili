@@ -9,6 +9,8 @@ parameters:
     env(LYDIA_DEBUG): true
     env(AWS_ACCESS_KEY_ID): ''
     env(AWS_SECRET_ACCESS_KEY): ''
+    env(S3_REGION): 'eu-west-3'
+    env(UPLOAD_BUCKET): catalog-pourlili
     eventstore.root_dir: 's3://event-store-pourlili'
     projection.root_dir: 's3://projection-pourlili'
 
@@ -149,7 +151,12 @@ services:
         arguments:
             -
                 version: latest
-                region: eu-west-3
+                region: '%env(string:S3_REGION)%'
                 credentials:
                     key: '%env(AWS_ACCESS_KEY_ID)%'
                     secret: '%env(AWS_SECRET_ACCESS_KEY)%'
+
+    App\Catalog\Infra\S3ImageUploader:
+        arguments:
+            $bucket: '%env(string:UPLOAD_BUCKET)%'
+            $region: '%env(string:S3_REGION)%'

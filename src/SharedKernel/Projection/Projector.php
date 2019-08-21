@@ -5,16 +5,14 @@ namespace App\SharedKernel\Projection;
 
 use Prooph\EventSourcing\AggregateChanged;
 use App\SharedKernel\Projection\Projection;
-use Aws\S3\S3Client;
 
 class Projector
 {
     private $rootDir;
 
-    public function __construct(string $rootDir, S3Client $s3)
+    public function __construct(string $rootDir)
     {
         $this->rootDir = $rootDir;
-        $s3->registerStreamWrapper();
     }
 
     public function updateProjection(string $projectionName, AggregateChanged $event, callable $updator, ?string $aggregateId = null)

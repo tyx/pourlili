@@ -16,7 +16,9 @@ final class Product extends AggregateRoot
 
     private $price;
 
-    private $imagePath;
+    private $originalImagePath;
+
+    private $uploadedImagePath;
 
     private $description;
 
@@ -42,7 +44,7 @@ final class Product extends AggregateRoot
     public function uploadImage(string $path)
     {
         $this->recordThat(
-            ImageOfProductWasUploaded::occur($this->aggregateId(), ['path' => $path])
+            ImageOfProductWasUploaded::occur($this->aggregateId(), ['path' => $path, 'list_id' => $this->listId->toString()])
         );
     }
 
@@ -60,6 +62,9 @@ final class Product extends AggregateRoot
             case MoneyWasCollected::class:
                 $this->whenMoneyWasCollected($event);
                 break;
+            case ImageOfProductWasUploaded::class:
+                $this->uploadedImagePath = $event->path();
+                break;
         }
     }
 
@@ -69,7 +74,7 @@ final class Product extends AggregateRoot
         $this->listId = Uuid::fromString($change->listId());
         $this->name = $change->name();
         $this->price = $change->price();
-        $this->imagePath = $change->imagePath();
+        $this->originalImagePath = $change->imagePath();
         $this->description = $change->description();
     }
 

@@ -16,5 +16,8 @@ class UploadImageOfProductHandler
 
     public function __invoke(UploadImageOfProduct $command)
     {
+        $product = $this->productRepository->find($command->id());
+        $product->uploadImage($command->imagePath());
+        $this->productRepository->save($product);
     }
 }
