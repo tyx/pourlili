@@ -29,10 +29,14 @@
             <div class="mdl-cell mdl-cell--4-col mdl-color-text--grey-700">
                 <div class="list-card mdl-card mdl-shadow--2dp">
                     <div class="mdl-card__media mdl-card--border">
+                        {% if product.image %}
                         <img
-                          data-src="{{ product.image }}"
+                          data-src="//{{ product.image }}"
                           src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                           onload="lzld(this)">
+                        {% else %}
+                            <i class="material-icons" style="font-size: 60px">photo</i>
+                        {% endif %}
                     </div>
                     <div class="mdl-card__title mdl-card--expand">
                         <h2 class="mdl-card__title-text mdl-color-text--primary">{{ product.name }}</h2>

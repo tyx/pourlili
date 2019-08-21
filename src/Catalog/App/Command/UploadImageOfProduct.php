@@ -24,6 +24,6 @@ class UploadImageOfProduct
 
     public function imagePath(): string
     {
-        return $this->imagePath();
+        return $this->imagePath;
     }
 }

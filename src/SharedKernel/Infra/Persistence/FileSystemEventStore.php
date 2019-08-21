@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Infra\Persistence;
 
-use Aws\S3\S3Client;
 use Iterator;
 use Prooph\Common\Messaging\Message;
 use Prooph\Common\Messaging\MessageConverter;
@@ -37,9 +36,8 @@ class FileSystemEventStore implements EventStore
      * @param MessageFactory   $messageFactory   To create message from array
      * @param MessageConverter $messageConverter To convert message into array
      */
-    public function __construct($rootDir, MessageFactory $messageFactory, MessageConverter $messageConverter, S3Client $s3)
+    public function __construct($rootDir, MessageFactory $messageFactory, MessageConverter $messageConverter)
     {
-        $s3->registerStreamWrapper();
         $this->rootDir = $rootDir;
         $this->messageFactory = $messageFactory;
         $this->messageConverter = $messageConverter;

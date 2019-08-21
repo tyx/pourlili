@@ -31,7 +31,7 @@ class ProductListProjection implements MessageSubscriberInterface
                     'id' => base64_encode($event->aggregateId()),
                     'name' => $event->name(),
                     'price' => $event->price(),
-                    'image' => $event->imagePath(),
+                    'image' => null,
                     'description' => $event->description(),
                     'funded' => false,
                     'alreadyCollected' => 0,
@@ -53,7 +53,7 @@ class ProductListProjection implements MessageSubscriberInterface
             function ($state, $event) {
                 $state['items'] = array_map(
                     function ($item) use ($event) {
-                        if ($item['id'] === base64_encode($event->productId())) {
+                        if ($item['id'] === base64_encode($event->aggregateId())) {
                             $item['alreadyCollected'] += $event->amount();
                             $item['remainingAmountToCollect'] -= $event->amount();
                             $item['progression'] = round($item['alreadyCollected'] / $item['price']);
@@ -69,7 +69,33 @@ class ProductListProjection implements MessageSubscriberInterface
                 );
 
                 return $state;
-            }
+            },
+            $event->listId()
+        );
+    }
+
+    public function handleProductImage(ImageOfProductWasUploaded $event)
+    {
+        $this->projector->updateProjection(
+            'product_list',
+            $event,
+            function ($state, $event) {
+                dump($state);
+                dump($event);
+                $state['items'] = array_map(
+                    function ($item) use ($event) {
+                        if ($item['id'] === base64_encode($event->aggregateId())) {
+                            $item['image'] = $event->path();
+                        }
+
+                        return $item;
+                    },
+                    $state['items'] ?? []
+                );
+
+                return $state;
+            },
+            $event->listId()
         );
     }
 
@@ -81,6 +107,10 @@ class ProductListProjection implements MessageSubscriberInterface
         ];
         yield MoneyWasCollected::class => [
             'method' => 'handleMoneyWasCollected',
+            'bus' => 'event.bus',
+        ];
+        yield ImageOfProductWasUploaded::class => [
+            'method' => 'handleProductImage',
             'bus' => 'event.bus',
         ];
     }
