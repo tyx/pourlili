@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Catalog\Domain;
 
 use App\Catalog\Domain\ProductWasRegistered;
+use App\Listing\Domain\ProductListWasSorted;
 use App\SharedKernel\Projection\Projector;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
@@ -80,8 +81,6 @@ class ProductListProjection implements MessageSubscriberInterface
             'product_list',
             $event,
             function ($state, $event) {
-                dump($state);
-                dump($event);
                 $state['items'] = array_map(
                     function ($item) use ($event) {
                         if ($item['id'] === base64_encode($event->aggregateId())) {
@@ -99,6 +98,19 @@ class ProductListProjection implements MessageSubscriberInterface
         );
     }
 
+    public function handleSortList(ProductListWasSorted $event)
+    {
+        $this->projector->updateProjection(
+            'product_list',
+            $event,
+            function ($state, $event) {
+                $state['items'] = $this->sortProducts($state['items'], $event->sort());
+                dump($state['items']);
+                return $state;
+            }
+        );
+    }
+
     public static function getHandledMessages(): iterable
     {
         yield ProductWasRegistered::class => [
@@ -113,5 +125,25 @@ class ProductListProjection implements MessageSubscriberInterface
             'method' => 'handleProductImage',
             'bus' => 'event.bus',
         ];
+        // Leaking a DomainEvent of another module looks like a smell
+        yield ProductListWasSorted::class => [
+            'method' => 'handleSortList',
+            'bus' => 'event.bus',
+        ];
+    }
+
+    private function sortProducts($products, $newOrder)
+    {
+        usort(
+            $products,
+            function ($a, $b) use ($newOrder) {
+                $indexA = array_search($a['id'], $newOrder, true);
+                $indexB = array_search($b['id'], $newOrder, true);
+
+                return $indexA <=> $indexB;
+            }
+        );
+
+        return $products;
     }
 }

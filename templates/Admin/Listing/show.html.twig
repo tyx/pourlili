@@ -1,5 +1,11 @@
 {% extends "Admin/base.html.twig" %}
 
+{% import "Admin/_helper.html.twig" as helper %}
+
+{% block top_js %}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+{% endblock %}
+
 {% block main %}
     <div class="drawer-frame">
         {{ include('Admin/_menu.html.twig') }}
@@ -11,13 +17,18 @@
                         <i class="material-icons">add_circle</i>
                         Ajouter un produit
                     </a>
+                    <button class="mdc-button mdc-button--unelevated hide" id="confirm-sort">
+                        <i class="material-icons">sort</i>
+                        Confirmer nouveau tri
+                    </button>
+                    {{ helper.loader('confirm-sort-loader', true, '#999') }}
                 </p>
                 <div class="mdc-layout-grid">
-                    <div class="mdc-layout-grid__inner">
+                    <div class="mdc-layout-grid__inner" id="product-list">
                         {% for item in items %}
                             <div class="mdc-layout-grid__cell">
-                                <div class="mdc-card demo-card demo-basic-with-header" id="product-{{ item.id }}">
-                                    <div class="demo-card__primary">
+                                <div class="mdc-card product-card demo-basic-with-header" id="product-{{ item.id }}">
+                                    <div class="demo-card__primary handle">
                                         <h2 class="demo-card__title mdc-typography mdc-typography--headline6">{{ item.name }}</h2>
                                         <h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">{{ item.price }}&nbsp;€</h3>
                                     </div>
@@ -57,4 +68,64 @@
             </div>
         </div>
     </div>
+    <div class="mdc-snackbar" data-mdc-auto-init="MDCSnackbar" id="snack">
+        <div class="mdc-snackbar__surface">
+            <div class="mdc-snackbar__label"
+                role="status"
+                aria-live="polite">
+            </div>
+            <div class="mdc-snackbar__actions">
+                <button class="mdc-icon-button mdc-snackbar__dismiss material-icons" title="Dismiss">close</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block end_js %}
+    {{ parent() }}
+    <script>
+    new Sortable(document.getElementById('product-list'), {
+        handle: '.demo-card__primary', // handle's class
+        animation: 150,
+        onSort: function (/**Event*/evt) {
+            document.getElementById('confirm-sort').classList.remove('hide');
+        },
+    });
+    const confirmSortButton = document.getElementById('confirm-sort');
+    confirmSortButton.addEventListener('click', function () { updateSortProductList(this, 'confirm-sort-loader'); });
+    function updateSortProductList(e, loaderId) {
+        const _this = e;
+        const loader = document.getElementById(loaderId);
+        if (loader) {
+            loader.classList.remove('hide');
+        }
+        _this.classList.add('hide');
+
+        const newOrder = Array.from(document.querySelectorAll('.product-card')).map((e) => {
+            return e.id.replace('product-', '');
+        });
+        fetch('/bo/listing/{{ list.id }}/sort', {
+            method: 'POST',
+            headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                product_ids: newOrder
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                loader.classList.add('hide');
+                openSnackbar('Nouveau tri pris en compte');
+            })
+            .catch(error => openSnackbar(error))
+        ;
+    }
+    function openSnackbar(text) {
+        const el = document.getElementById('snack');
+        el.MDCSnackbar.labelEl_.textContent = text;
+        el.MDCSnackbar.open();
+    }
+    </script>
 {% endblock %}

@@ -10,6 +10,8 @@
         <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="/css/admin.css">
+        {% block top_js %}
+        {% endblock %}
     </head>
     <body class="mdc-typography">
         <header class="mdc-top-app-bar mdc-top-app-bar--dense">
@@ -29,8 +31,11 @@
         <main class="mdc-top-app-bar--fixed-adjust">
             {% block main %}{% endblock %}
         </main>
+
+        {% block end_js %}
         <script>
             window.mdc.autoInit();
         </script>
+        {% endblock %}
     </body>
 </html>

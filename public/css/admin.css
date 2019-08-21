@@ -7,3 +7,9 @@ body {
     display: flex;
     height: 100vh;
 }
+.handle {
+    cursor: grab;
+}
+.hide {
+    display: none;
+}

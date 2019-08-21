@@ -9,6 +9,7 @@
         "ext-iconv": "*",
         "aws/aws-sdk-php": "^3.109",
         "prooph/standard-projections": "^1.1",
+        "rezzza/symfony-rest-api-json": "^2.1",
         "symfony/apache-pack": "^1.0",
         "symfony/console": "4.3.*",
         "symfony/dotenv": "4.3.*",
