@@ -18,6 +18,8 @@ final class ProductList extends AggregateRoot
 
     private $enabled = false;
 
+    private $sortedProducts = [];
+
     public static function start(Uuid $id, string $host)
     {
         $self = new self();
@@ -26,6 +28,17 @@ final class ProductList extends AggregateRoot
         );
 
         return $self;
+    }
+
+    public function sortProducts(array $productIds)
+    {
+        if ($productIds == $this->sortedProducts) {
+            return; // Already sorted
+        }
+
+        $this->recordThat(
+            ProductListWasSorted::occur($this->aggregateId(), ['sort' => $productIds])
+        );
     }
 
     public function disable()
@@ -58,6 +71,9 @@ final class ProductList extends AggregateRoot
                 break;
             case ProductListWasDisabled::class:
                 $this->enabled = false;
+                break;
+            case ProductListWasSorted::class:
+                $this->sortedProducts = $event->sort();
                 break;
         }
     }

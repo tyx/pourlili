@@ -5,6 +5,7 @@ namespace App\Listing\Ui\Controller;
 use App\Catalog\App\Query\ListAllProducts;
 use App\Listing\App\Command\DisableList;
 use App\Listing\App\Command\EnableList;
+use App\Listing\App\Command\SortProducts;
 use App\Listing\App\Command\StartList;
 use App\Listing\App\Query\AllLists;
 use App\Listing\App\Query\ListOfId;
@@ -13,6 +14,7 @@ use App\SharedKernel\Bridge\QueryBus;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -114,5 +116,16 @@ class AdminController
         return new RedirectResponse(
             $router->generate('admin_listing_show', ['listId' => $listId])
         );
+    }
+
+    public function sortProducts(Request $request, $listId)
+    {
+        $productIds = $request->request->get('product_ids', []);
+
+        $this->commandBus->execute(
+            new SortProducts(Uuid::fromString(base64_decode($listId)), $productIds)
+        );
+
+        return new JsonResponse(['status' => 'ok']);
     }
 }

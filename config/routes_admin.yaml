@@ -21,3 +21,7 @@ listing_enable:
 listing_disable:
     path: /listing/{listId}/disable
     controller: App\Listing\Ui\Controller\AdminController::disable
+
+listing_sort:
+    path: /listing/{listId}/sort
+    controller: App\Listing\Ui\Controller\AdminController::sortProducts
