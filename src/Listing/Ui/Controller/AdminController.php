@@ -44,11 +44,24 @@ class AdminController
             );
         }
 
+        $lists = array_map(
+            function ($item) use ($router) {
+                $item['url'] = $router->generate('admin_listing_show', ['listId' => $item['id']]);
+
+                return $item;
+            },
+            $this->queryBus->query(new AllLists())
+        );
+
+        if ('json' === $request->getContentType()) {
+            return new JsonResponse($lists);
+        }
+
         return new Response(
             $this->twig->render(
                 'Admin/Listing/choose.html.twig',
                 [
-                    'lists' => $this->queryBus->query(new AllLists()),
+                    'lists' => $lists,
                 ]
             )
         );
@@ -62,6 +75,7 @@ class AdminController
                 [
                     'items' => $this->queryBus->query(new ListAllProducts(base64_decode($listId))),
                     'list' => $this->queryBus->query(new ListOfId(Uuid::fromString(base64_decode($listId)))),
+                    'menu_item' => 'products',
                 ]
             )
         );

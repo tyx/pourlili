@@ -3,13 +3,18 @@ body {
     margin: 0;
 }
 
-.drawer-frame {
-    display: flex;
-    height: 100vh;
+.main-content {
+    padding: 1rem;
 }
 .handle {
     cursor: grab;
 }
 .hide {
     display: none;
+}
+
+@media screen and (max-width: 640px) {
+    .mdc-tab__text-label {
+      display:none;
+    }
 }
