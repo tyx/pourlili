@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Listing\Domain;
 
+use App\Listing\Domain\HostWasRegisteredOnList;
 use App\SharedKernel\Projection\Projector;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
@@ -26,13 +27,42 @@ class AllListProjection implements MessageSubscriberInterface
 
             $state['items'][] = [
                 'id' => base64_encode($event->aggregateId()),
-                'host' => $event->host(),
-                'enabled' => false,
+                'name' => $event->name(),
+                'hosts' => [],
             ];
 
             return $state;
         });
         $this->projector->save($projection);
+    }
+
+    public function registerHost(HostWasRegisteredOnList $event)
+    {
+        $this->projector->updateProjection(
+            'all_list',
+            $event,
+            function ($state, $event) {
+                $state['items'] = array_map(
+                    function ($item) use ($event) {
+                        dump($event);
+                        dump($item);
+                        if (base64_encode($event->aggregateId()) === $item['id']) {
+                            $item['hosts'][] = [
+                                'name' => $event->hostName(),
+                                'enabled' => $event->hostEnabled(),
+                            ];
+                        }
+
+                        return $item;
+                    },
+                    $state['items']
+                );
+
+                return $state;
+            },
+            ''
+        );
+        exit;
     }
 
     public function disableProductList(ProductListWasDisabled $event)
@@ -90,12 +120,17 @@ class AllListProjection implements MessageSubscriberInterface
 
         yield ProductListWasDisabled::class => [
             'method' => 'disableProductList',
-            'bus' => 'event.bus'
+            'bus' => 'event.bus',
         ];
 
         yield ProductListWasEnabled::class => [
             'method' => 'enableProductList',
-            'bus' => 'event.bus'
+            'bus' => 'event.bus',
+        ];
+
+        yield HostWasRegisteredOnList::class => [
+            'method' => 'registerHost',
+            'bus' => 'event.bus',
         ];
     }
 }

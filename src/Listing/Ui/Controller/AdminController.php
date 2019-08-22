@@ -4,14 +4,19 @@ namespace App\Listing\Ui\Controller;
 
 use App\Catalog\App\Query\ListAllProducts;
 use App\Listing\App\Command\DisableList;
+use App\Listing\App\Command\EditList;
 use App\Listing\App\Command\EnableList;
 use App\Listing\App\Command\SortProducts;
 use App\Listing\App\Command\StartList;
 use App\Listing\App\Query\AllLists;
 use App\Listing\App\Query\ListOfId;
+use App\Listing\Ui\Form\HostForm;
+use App\Listing\Ui\Form\HostInput;
 use App\SharedKernel\Bridge\CommandBus;
 use App\SharedKernel\Bridge\QueryBus;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -83,8 +88,12 @@ class AdminController
 
     public function new(Request $request, RouterInterface $router, FormFactoryInterface $formFactory)
     {
-        $form = $formFactory->createBuilder()
-            ->add('host', TextType::class)
+        $form = $formFactory->createBuilder(FormType::class, ['hosts' => [['name' => '123']]])
+            ->add('name', TextType::class)
+            ->add('hosts', CollectionType::class, [
+                'entry_type' => HostForm::class,
+                'entry_options' => ['label' => false],
+            ])
             ->getForm()
         ;
 
@@ -92,8 +101,8 @@ class AdminController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $id = Uuid::uuid4();
-            $host = $form->get('host')->getData();
-            $this->commandBus->execute(new StartList($id, $host));
+            ['hosts' => $hosts, 'name' => $name] = $form->getData();
+            $this->commandBus->execute(new StartList($id, $name, $hosts));
 
             return new RedirectResponse(
                 $router->generate('admin_listing_show', ['listId' => base64_encode($id->toString())])
@@ -103,6 +112,45 @@ class AdminController
         return new Response(
             $this->twig->render(
                 'Admin/Listing/new.html.twig',
+                [
+                    'form' => $form->createView(),
+                ]
+            )
+        );
+    }
+
+    public function settings(Request $request, $listId, FormFactoryInterface $formFactory, RouterInterface $router)
+    {
+        $list = $this->queryBus->query(new ListOfId(Uuid::fromString(base64_decode($listId))));
+        dump($list);
+        $form = $formFactory->createBuilder(FormType::class, ['hosts' => null])//['hosts' => [['name' => '123']]])
+            ->add('name', TextType::class)
+            ->add('hosts', CollectionType::class, [
+                'entry_type' => HostForm::class,
+                'entry_options' => ['label' => false],
+            ])
+            ->getForm()
+        ;
+dump($form->get('hosts'));
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            dump($form->get('hosts'));
+            dump($form->get('hosts')->getData());
+            exit;
+            ['hosts' => $hosts, 'name' => $name] = $form->getData();
+            $this->commandBus->execute(
+                new EditList(Uuid::fromString(base64_decode($listId)), $name, $hosts)
+            );
+
+            return new RedirectResponse(
+                $router->generate('admin_listing_show', ['listId' => $listId])
+            );
+        }
+
+        return new Response(
+            $this->twig->render(
+                'Admin/Listing/settings.html.twig',
                 [
                     'form' => $form->createView(),
                 ]

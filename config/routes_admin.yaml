@@ -26,6 +26,10 @@ listing_sort:
     path: /listing/{listId}/sort
     controller: App\Listing\Ui\Controller\AdminController::sortProducts
 
+listing_settings:
+    path: /listing/{listId}/settings
+    controller: App\Listing\Ui\Controller\AdminController::settings
+
 contribution_index:
     path: /listing/{listId}/contribution
     controller: App\Contribution\Ui\Controller\AdminController::index
@@ -35,6 +39,6 @@ contribution_confirm:
     controller: App\Contribution\Ui\Controller\AdminController::confirm
 
 login:
-    path:       /login
+    path: /login
     controller: App\SharedKernel\Bridge\AdminSecurityController::login
     methods: GET|POST

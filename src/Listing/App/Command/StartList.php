@@ -7,12 +7,15 @@ class StartList
 {
     private $id;
 
-    private $host;
+    private $name;
 
-    public function __construct(Uuid $id, string $host)
+    private $hosts;
+
+    public function __construct(Uuid $id, string $name, array $hosts)
     {
         $this->id = $id;
-        $this->host = $host;
+        $this->name = $name;
+        $this->hosts = $hosts;
     }
 
     public function id(): Uuid
@@ -20,8 +23,13 @@ class StartList
         return $this->id;
     }
 
-    public function host(): string
+    public function hosts(): array
     {
-        return $this->host;
+        return $this->hosts;
+    }
+
+    public function name(): string
+    {
+        return $this->name;
     }
 }

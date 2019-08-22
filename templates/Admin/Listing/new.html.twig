@@ -1,22 +1,105 @@
 {% extends "Admin/base.html.twig" %}
 
+{% block top_js %}
+    <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
+{% endblock %}
+
 {% block main %}
-    <h2>Commencer une nouvelle list</h2>
-    {{ form_start(form) }}
-    <div>
+    {% block main_title %}
+        <h2>Commencer une nouvelle liste</h2>
+    {% endblock %}
+    <script id="hosts-source" type="application/json">
+    {{ form.hosts.vars.value | json_encode | raw }}
+    </script>
+    {{ form_start(form, { attr: {id: 'new-listing' }}) }}
         <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
-            {{ form_widget(form.host, { attr: { class: "mdc-text-field__input" }}) }}
+            {{ form_widget(form.name, { attr: { class: "mdc-text-field__input" }}) }}
             <div class="mdc-notched-outline">
                 <div class="mdc-notched-outline__leading"></div>
-                <div class="mdc-notched-outline__notch">{{ form_label(form.host, null, { label_attr: { class: "mdc-floating-label" }}) }}</div>
+                <div class="mdc-notched-outline__notch">{{ form_label(form.name, null, { label_attr: { class: "mdc-floating-label" }}) }}</div>
                 <div class="mdc-notched-outline__trailing"></div>
             </div>
         </div>
-    </div>
 
-    <div>
-        <button class="mdc-button mdc-button--unelevated" type="submit">Commencer</button>
-    </div>
+        <div>
+            <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                <input type="text" id="new_host" name="new_host" class="mdc-text-field__input" v-model="host" v-on:keydown="addHostWhenDelimiter">
+                <div class="mdc-notched-outline">
+                    <div class="mdc-notched-outline__leading"></div>
+                    <div class="mdc-notched-outline__notch">
+                        <label for="new_host" class="mdc-floating-label">Nouvel host</label>
+                    </div>
+                    <div class="mdc-notched-outline__trailing"></div>
+                </div>
+            </div>
+            <button class="mdc-icon-button material-icons mdc-theme--secondary" type="button" v-if="host" v-on:click="addHost">add_circle</button>
+        </div>
+        <ul class="mdc-list host-list" style="max-width: 400px">
+            <li class="mdc-list-item mdc-ripple-upgraded" v-for="(h, index) in hosts">
+                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex:1; padding-right: 16px">${ h.name }</span>
+                <div class="mdc-list-item__meta">
+                    <div class="mdc-form-field">
+                        <div class="mdc-checkbox">
+                            <input :id="'host-enabled-'+index" type="checkbox" v-model="h.enabled" :name="`form[hosts][${index}][enabled]`"
+                            />
+                        </div>
+                        <label :for="'host-enabled-'+index">Activé</label>
+                    </div>
+                    <span class="material-icons" aria-hidden="true" v-on:click="removeHost">cancel</span>
+                </div>
+                <input type="hidden" :name="`form[hosts][${index}][name]`" v-model="h.name">
+            </li>
+        </ul>
+        <div>
+            <button class="mdc-button mdc-button--unelevated" type="submit">Commencer</button>
+        </div>
+    {{ form_widget(form.hosts) }}
+    {{form_end(form)}}
+    </form>
+{% endblock %}
 
-    {{ form_end(form) }}
+{% block end_js %}
+    <script>
+    "use strict";
+    new Vue({
+        delimiters: ['${', '}'],
+        el: '#new-listing' ,
+        data: {
+            host: null,
+            hosts: [],
+        },
+        created: function() {
+            this.hosts = JSON.parse(document.getElementById('hosts-source').innerHTML);
+            if (null === this.hosts) {
+                this.hosts = [];
+            }
+        },
+        methods: {
+            addHost() {
+                if (null === this.host) {
+                    return;
+                }
+
+                if (this.hosts.filter(e => e.name === this.host).length <= 0) {
+                    this.hosts.push({name: this.host, enabled: false});
+                }
+
+                this.host = null;
+                window.mdc.autoInit();
+            },
+            removeHost(event) {
+                const element = event.target.parentNode.parentNode;
+                const index = Array.from(element.parentNode.children).indexOf(element);
+                this.hosts.splice(index, 1);
+            },
+            addHostWhenDelimiter(event) {
+                if (event.key == ',') {
+                    this.addHost();
+                    event.preventDefault();
+                }
+            }
+        }
+    });
+    </script>
+    {{ parent() }}
 {% endblock %}

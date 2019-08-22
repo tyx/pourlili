@@ -37,8 +37,13 @@
                         <template
                             v-else
                         >
+                            {% if list is defined %}
+                                <a class="mdc-button mdc-button--unelevated" href="{{ path('admin_listing_settings', { listId: list.id }) }}">
+                                    <i class="material-icons">settings</i>
+                                </a>
+                            {% endif %}
                             <button class="mdc-button mdc-button--unelevated" id="choose-list">
-                                {% if list is defined %}{{ list.host }}{% else %}Vos listes{% endif %}
+                                {% if list is defined %}{{ list.name }}{% else %}Vos listes{% endif %}
                             </button>
                             <div class="mdc-menu-surface--anchor" style="display: inline-block">
                                 <div class="mdc-menu mdc-menu-surface" data-mdc-auto-init="MDCMenu" id="list-menu">
@@ -46,20 +51,35 @@
                                         v-for="list in lists"
                                     >
                                         <li class="mdc-list-item" role="menuitem">
-                                            <a :href="list.url" class="mdc-list-item__text">${ list.host }</a>
+                                            <a :href="list.url" class="mdc-list-item__text">${ list.name }</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                            <a class="mdc-button mdc-button--unelevated" href="{{ path('admin_listing_new') }}">
-                                <i class="material-icons">note_add</i>
-                            </a>
                         </template>
                     </div>
                 </section>
             </div>
         </header>
         <main class="mdc-top-app-bar--fixed-adjust">
+            <div class="mdc-menu-surface--anchor app-fab--absolute">
+                <button id="add-button" class="mdc-fab  mdc-fab--extended">
+                    <span class="material-icons mdc-fab__icon">add</span>
+                    <span class="mdc-fab__label">Ajouter</span>
+                </button>
+                <div class="mdc-menu mdc-menu-surface" data-mdc-auto-init="MDCMenu" id="add-menu">
+                    <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
+                        {% if list is defined %}
+                        <li class="mdc-list-item" role="menuitem">
+                            <a href="{{ path('admin_product_new', { listId: list.id }) }}" class="mdc-list-item__text">Nouveau produit</a>
+                        </li>
+                        {% endif %}
+                        <li class="mdc-list-item" role="menuitem">
+                            <a href="{{ path('admin_listing_new') }}" class="mdc-list-item__text">Nouvelle liste</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             {% if list is defined %}
             <div class="mdc-tab-bar" role="tablist" data-mdc-auto-init="MDCTabBar">
                 <div class="mdc-tab-scroller">
@@ -165,6 +185,11 @@
                 }
             });
             window.mdc.autoInit();
+            const chooseList = document.getElementById("add-button");
+            chooseList.addEventListener('click', function () {
+                const menu = document.getElementById('add-menu');
+                menu.MDCMenu.menuSurface_.open();
+            });
         </script>
         {% endblock %}
     </body>
