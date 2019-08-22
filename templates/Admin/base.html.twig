@@ -1,3 +1,7 @@
+{% import "Admin/_helper.html.twig" as helper %}
+
+{% use "Admin/_menu.html.twig" %}
+
 <!doctype html>
 <html lang="fr">
     <head>
@@ -10,6 +14,12 @@
         <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="/css/admin.css">
+        {% if app.debug %}
+            <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        {% else %}
+            <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        {% endif %}
+
         {% block top_js %}
         {% endblock %}
     </head>
@@ -17,23 +27,143 @@
         <header class="mdc-top-app-bar mdc-top-app-bar--dense">
             <div class="mdc-top-app-bar__row">
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-                    <button class="mdc-icon-button material-icons mdc-top-app-bar__navigation-icon--unbounded">menu</button>
                     <span class="mdc-top-app-bar__title">Pour Lili</span>
                 </section>
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-                    <a class="mdc-button mdc-button--unelevated" href="{{ path('admin_listing_new') }}">
-                        <i class="material-icons">note_add</i>
-                        Nouvelle liste
-                    </a>
+                    <div id="choose-list-area">
+                        <div v-if="loading">
+                            {{ helper.loader('loader-list', false, '#FFF') }}
+                        </div>
+                        <template
+                            v-else
+                        >
+                            <button class="mdc-button mdc-button--unelevated" id="choose-list">
+                                {% if list is defined %}{{ list.host }}{% else %}Vos listes{% endif %}
+                            </button>
+                            <div class="mdc-menu-surface--anchor" style="display: inline-block">
+                                <div class="mdc-menu mdc-menu-surface" data-mdc-auto-init="MDCMenu" id="list-menu">
+                                    <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1"
+                                        v-for="list in lists"
+                                    >
+                                        <li class="mdc-list-item" role="menuitem">
+                                            <a :href="list.url" class="mdc-list-item__text">${ list.host }</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <a class="mdc-button mdc-button--unelevated" href="{{ path('admin_listing_new') }}">
+                                <i class="material-icons">note_add</i>
+                            </a>
+                        </template>
+                    </div>
                 </section>
             </div>
         </header>
         <main class="mdc-top-app-bar--fixed-adjust">
-            {% block main %}{% endblock %}
+            {% if list is defined %}
+            <div class="mdc-tab-bar" role="tablist" data-mdc-auto-init="MDCTabBar">
+                <div class="mdc-tab-scroller">
+                    <div class="mdc-tab-scroller__scroll-area">
+                        <div class="mdc-tab-scroller__scroll-content">
+                            {% set current_menu_item = 'dashboard' %}
+                            <button class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
+                                <span class="mdc-tab__content">
+                                    <span class="mdc-tab__icon material-icons" aria-hidden="true">dashboard</span>
+                                    <span class="mdc-tab__text-label">Tableau de bord</span>
+                                </span>
+                                <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
+                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                </span>
+                                <span class="mdc-tab__ripple"></span>
+                            </button>
+                        </div>
+                        <div class="mdc-tab-scroller__scroll-content">
+                            {% set current_menu_item = 'products' %}
+                            <a href="{{ path('admin_listing_show', { listId: list.id }) }}" class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
+                                <span class="mdc-tab__content">
+                                    <span class="mdc-tab__icon material-icons" aria-hidden="true">shopping_cart</span>
+                                    <span class="mdc-tab__text-label">Produits</span>
+                                </span>
+                                <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
+                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                </span>
+                                <span class="mdc-tab__ripple"></span>
+                            </a>
+                        </div>
+                        <div class="mdc-tab-scroller__scroll-content">
+                            {% set current_menu_item = 'contributions' %}
+                            <button class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
+                            <span class="mdc-tab__content">
+                                <span class="mdc-tab__icon material-icons" aria-hidden="true">monetization_on</span>
+                                <span class="mdc-tab__text-label">Contributions</span>
+                            </span>
+                            <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
+                                <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                            </span>
+                            <span class="mdc-tab__ripple"></span>
+                            </button>
+                        </div>
+                        <div class="mdc-tab-scroller__scroll-content">
+                            {% set current_menu_item = 'guestbook' %}
+                            <button class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
+                            <span class="mdc-tab__content">
+                                <span class="mdc-tab__icon material-icons" aria-hidden="true">insert_comment</span>
+                                <span class="mdc-tab__text-label">Livre d'or</span>
+                            </span>
+                            <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
+                                <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                            </span>
+                            <span class="mdc-tab__ripple"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="main-content">
+            {% block main %}
+            {% endblock %}
+            </div>
         </main>
 
         {% block end_js %}
         <script>
+            new Vue({
+                delimiters: ['${', '}'],
+                el: '#choose-list-area' ,
+                data () {
+                    return {
+                        lists: null,
+                        loading: true,
+                        errored: false
+                    }
+                },
+                mounted () {
+                    fetch('/bo/listing', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-type': 'application/json',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(responseJson => {
+                           this.lists = responseJson;
+                           this.loading = false;
+                        })
+                        .then(e => {
+                            window.mdc.autoInit();
+                            const chooseList = document.getElementById("choose-list");
+                            chooseList.addEventListener('click', function () {
+                                const menu = document.getElementById('list-menu');
+                                menu.MDCMenu.menuSurface_.open();
+                            });
+                        })
+                        .catch(error => console.log(error))
+                    ;
+                }
+            });
             window.mdc.autoInit();
         </script>
         {% endblock %}

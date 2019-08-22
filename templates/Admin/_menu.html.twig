@@ -1,22 +1,11 @@
-<aside class="mdc-drawer mdc-top-app-bar--fixed-adjust">
-    <div class="mdc-drawer__header">
-        <h3 class="mdc-drawer__title">List</h3>
-        <h6 class="mdc-drawer__subtitle">{{ list.host }}</h6>
-        {% if list.enabled %}
-            <a href="{{ path('admin_listing_disable', { listId: list.id }) }}" class="mdc-icon-button material-icons mdc-icon-button--on">visibility</a>
-        {% else %}
-            <a href="{{ path('admin_listing_enable', { listId: list.id }) }}" class="mdc-icon-button material-icons mdc-icon-button--on">visibility_off</a>
-        {% endif %}
-        <a href="{{ path('admin_listing_index') }}" class="mdc-icon-button material-icons">list</a>
-    </div>
-    <div class="mdc-drawer__content">
-        <nav class="mdc-list">
-            <a aria-selected="true" class="mdc-list-item mdc-list-item--activated" href="#" tabindex="-1">
-                <i aria-hidden="true" class="material-icons mdc-list-item__graphic">inbox</i>Products</a>
-            <a class="mdc-list-item" href="#" tabindex="-1">
-                <i aria-hidden="true" class="material-icons mdc-list-item__graphic">star</i>Contributions</a>
-            <a class="mdc-list-item" href="#" tabindex="-1">
-                <i aria-hidden="true" class="material-icons mdc-list-item__graphic">send</i>Guest book</a>
-        </nav>
-    </div>
-</aside>
+{% block menu_indicator_active %}
+    {%- if menu_item is defined and menu_item == current_menu_item -%}
+        mdc-tab-indicator--active
+    {%- endif -%}
+{% endblock %}
+
+{% block menu_active %}
+    {%- if menu_item is defined and menu_item == current_menu_item -%}
+        mdc-tab--active
+    {%- endif -%}
+{% endblock %}

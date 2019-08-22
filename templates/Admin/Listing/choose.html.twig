@@ -2,15 +2,21 @@
 
 {% block main %}
     <form method="post">
-        <div class="mdc-select" data-mdc-auto-init="MDCSelect">
+        <div class="mdc-select mdc-select--outlined" data-mdc-auto-init="MDCSelect">
             <i class="mdc-select__dropdown-icon"></i>
             <select class="mdc-select__native-control" name="listId">
                 <option value="" disabled selected></option>
-                {% for list in lists.items %}
+                {% for list in lists %}
                     <option value="{{ list.id }}">{{ list.host }}</option>
                 {% endfor %}
             </select>
-            <label class="mdc-floating-label">Choisir une liste</label>
+            <div class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched">
+                <div class="mdc-notched-outline__leading"></div>
+                <div class="mdc-notched-outline__notch">
+                    <label for="outlined" class="mdc-floating-label mdc-floating-label--float-above" style="">Choisir une liste</label>
+                </div>
+                <div class="mdc-notched-outline__trailing"></div>
+            </div>
             <div class="mdc-line-ripple"></div>
         </div>
         <button class="mdc-button mdc-button--unelevated" type="submit">Ok</button>

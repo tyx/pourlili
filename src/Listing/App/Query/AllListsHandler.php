@@ -14,6 +14,8 @@ class AllListsHandler
 
     public function __invoke(AllLists $query)
     {
-        return $this->projector->load('', 'all_list')->state() ?? ['items' => []];
+        $state = $this->projector->load('', 'all_list')->state() ?? ['items' => []];
+
+        return $state['items'];
     }
 }

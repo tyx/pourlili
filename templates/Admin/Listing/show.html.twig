@@ -7,67 +7,58 @@
 {% endblock %}
 
 {% block main %}
-    <div class="drawer-frame">
-        {{ include('Admin/_menu.html.twig') }}
-        <div class="drawer-frame-app-content">
-            <div class="drawer-main-content mdc-top-app-bar--fixed-adjust">
-                <main class="main-content">
-                <p>
-                    <a class="mdc-button mdc-button--unelevated" href="{{ path('admin_product_new', { listId: list.id }) }}">
-                        <i class="material-icons">add_circle</i>
-                        Ajouter un produit
-                    </a>
-                    <button class="mdc-button mdc-button--unelevated hide" id="confirm-sort">
-                        <i class="material-icons">sort</i>
-                        Confirmer nouveau tri
-                    </button>
-                    {{ helper.loader('confirm-sort-loader', true, '#999') }}
-                </p>
-                <div class="mdc-layout-grid">
-                    <div class="mdc-layout-grid__inner" id="product-list">
-                        {% for item in items %}
-                            <div class="mdc-layout-grid__cell">
-                                <div class="mdc-card product-card demo-basic-with-header" id="product-{{ item.id }}">
-                                    <div class="demo-card__primary handle">
-                                        <h2 class="demo-card__title mdc-typography mdc-typography--headline6">{{ item.name }}</h2>
-                                        <h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">{{ item.price }}&nbsp;€</h3>
-                                    </div>
-                                    <div class="mdc-card__primary-action demo-card__primary-action" tabindex="0">
-                                        <div class="mdc-card__media mdc-card__media--16-9 demo-card__media" style="background-image: url(&quot;//{{ item.image }}&quot;);"></div>
-                                        <div class="demo-card__secondary mdc-typography mdc-typography--body2">
-                                            {{ item.description }}
+        <p>
+            <a class="mdc-button mdc-button--unelevated" href="{{ path('admin_product_new', { listId: list.id }) }}">
+                <i class="material-icons">add_circle</i>
+                Ajouter un produit
+            </a>
+            <button class="mdc-button mdc-button--unelevated hide" id="confirm-sort">
+                <i class="material-icons">sort</i>
+                Confirmer nouveau tri
+            </button>
+            {{ helper.loader('confirm-sort-loader', true, '#999') }}
+        </p>
+        <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner" id="product-list">
+                {% for item in items %}
+                    <div class="mdc-layout-grid__cell">
+                        <div class="mdc-card product-card demo-basic-with-header" id="product-{{ item.id }}">
+                            <div class="demo-card__primary handle">
+                                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">{{ item.name }}</h2>
+                                <h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">{{ item.price }}&nbsp;€</h3>
+                            </div>
+                            <div class="mdc-card__primary-action demo-card__primary-action" tabindex="0">
+                                <div class="mdc-card__media mdc-card__media--16-9 demo-card__media" style="background-image: url(&quot;//{{ item.image }}&quot;);"></div>
+                                <div class="demo-card__secondary mdc-typography mdc-typography--body2">
+                                    {{ item.description }}
 
-                                            {% if item.progression is defined %}
+                                    {% if item.progression is defined %}
 
-                                            <div class="mdc-linear-progress" role="progressbar">
-                                                <div class="mdc-linear-progress__buffering-dots"></div>
-                                                <div class="mdc-linear-progress__buffer"></div>
-                                                <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar" style="transform: scaleX({{ item.progression }});">
-                                                    <span class="mdc-linear-progress__bar-inner"></span>
-                                                </div>
-                                                <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
-                                                    <span class="mdc-linear-progress__bar-inner"></span>
-                                                </div>
-                                            </div>
-                                            {% endif %}
+                                    <div class="mdc-linear-progress" role="progressbar">
+                                        <div class="mdc-linear-progress__buffering-dots"></div>
+                                        <div class="mdc-linear-progress__buffer"></div>
+                                        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar" style="transform: scaleX({{ item.progression }});">
+                                            <span class="mdc-linear-progress__bar-inner"></span>
+                                        </div>
+                                        <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+                                            <span class="mdc-linear-progress__bar-inner"></span>
                                         </div>
                                     </div>
-                                    <div class="mdc-card__actions">
-                                        <div class="mdc-card__action-buttons">
-                                            <a class="mdc-button mdc-card__action mdc-card__action--button" href="">Edit</a>
-                                            <a class="mdc-button mdc-card__action mdc-card__action--button" href="">Disable</a>
-                                            <a class="mdc-button mdc-card__action mdc-card__action--button" href="">Contribute</a>
-                                        </div>
-                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
-                        {% endfor %}
+                            <div class="mdc-card__actions">
+                                <div class="mdc-card__action-buttons">
+                                    <a class="mdc-button mdc-card__action mdc-card__action--button" href="">Edit</a>
+                                    <a class="mdc-button mdc-card__action mdc-card__action--button" href="">Disable</a>
+                                    <a class="mdc-button mdc-card__action mdc-card__action--button" href="">Contribute</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                </main>
+                {% endfor %}
             </div>
         </div>
-    </div>
     <div class="mdc-snackbar" data-mdc-auto-init="MDCSnackbar" id="snack">
         <div class="mdc-snackbar__surface">
             <div class="mdc-snackbar__label"

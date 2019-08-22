@@ -24,16 +24,16 @@
             <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="10" />
         </service>
 
-        <service id="json_exception_handler.ui" class="Rezzza\SymfonyRestApiJson\JsonExceptionHandler">
+        <!-- <service id="json_exception_handler.ui" class="Rezzza\SymfonyRestApiJson\JsonExceptionHandler">
             <argument type="service">
                 <service class="Rezzza\SymfonyRestApiJson\ExceptionHttpCodeMap">
                     <argument>%exception_http_code_map%</argument>
                 </service>
             </argument>
             <tag name="kernel.event_listener" event="kernel.exception" method="onKernelException" priority="32" />
-        </service>
+        </service> -->
 
-        <service id="json_exception_controller.ui" class="Rezzza\SymfonyRestApiJson\JsonExceptionController">
+        <!-- <service id="json_exception_controller.ui" class="Rezzza\SymfonyRestApiJson\JsonExceptionController" public="true">
             <argument>%kernel.debug%</argument>
             <argument>%show_exception_token%</argument>
         </service>
@@ -43,6 +43,6 @@
             <tag name="monolog.logger" channel="request" />
             <argument>json_exception_controller.ui:showException</argument>
             <argument type="service" id="logger" on-invalid="null" />
-        </service>
+        </service> -->
     </services>
 </container>
