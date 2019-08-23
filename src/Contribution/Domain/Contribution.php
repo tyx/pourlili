@@ -55,32 +55,33 @@ class Contribution extends AggregateRoot
 
             $this->recordThat(
                 PaymentWasSuccessful::occur($this->aggregateId(), [
+                    'list_id' => $this->listId,
                     'payment_url' => $paymentResult->paymentUrl(),
                     'details' => $paymentResult->details(),
                 ])
             );
         } catch (PaymentError $exception) {
             $this->recordThat(
-                PaymentWasFailed::occur($this->aggregateId())
+                PaymentWasFailed::occur($this->aggregateId(), ['list_id' => $this->listId])
             );
         }
     }
 
     public function confirm()
     {
-        if (true === $this->confirmed) {
+        /*if (true === $this->confirmed) {
             return;
-        }
+        }*/
 
         $this->recordThat(
-            ContributionWasConfirmed::occur($this->aggregateId(), ['basket_id' => $this->basketId])
+            ContributionWasConfirmed::occur($this->aggregateId(), ['basket_id' => $this->basketId, 'list_id' => $this->listId])
         );
     }
 
     public function sign(string $signature, ?string $message)
     {
         $this->recordThat(
-            ContributionWasSigned::occur($this->aggregateId(), ['signature' => $signature, 'message' => $message])
+            ContributionWasSigned::occur($this->aggregateId(), ['list_id' => $this->listId, 'signature' => $signature, 'message' => $message])
         );
     }
 
@@ -97,6 +98,7 @@ class Contribution extends AggregateRoot
                 $this->amount = $event->amount();
                 $this->author = $event->author();
                 $this->basketId = $event->basketId();
+                $this->listId = $event->listId();
                 break;
             case PaymentWasFailed::class:
                 $this->successfulPayment = false;

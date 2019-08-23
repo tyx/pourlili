@@ -92,16 +92,16 @@
                         </div>
                         <div class="mdc-tab-scroller__scroll-content">
                             {% set current_menu_item = 'contributions' %}
-                            <button class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
-                            <span class="mdc-tab__content">
-                                <span class="mdc-tab__icon material-icons" aria-hidden="true">monetization_on</span>
-                                <span class="mdc-tab__text-label">Contributions</span>
-                            </span>
-                            <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
-                                <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                            </span>
-                            <span class="mdc-tab__ripple"></span>
-                            </button>
+                            <a href="{{ path('admin_contribution_index', { listId: list.id }) }}" class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
+                                <span class="mdc-tab__content">
+                                    <span class="mdc-tab__icon material-icons" aria-hidden="true">monetization_on</span>
+                                    <span class="mdc-tab__text-label">Contributions</span>
+                                </span>
+                                <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
+                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                </span>
+                                <span class="mdc-tab__ripple"></span>
+                            </a>
                         </div>
                         <div class="mdc-tab-scroller__scroll-content">
                             {% set current_menu_item = 'guestbook' %}

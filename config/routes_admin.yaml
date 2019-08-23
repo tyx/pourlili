@@ -25,3 +25,11 @@ listing_disable:
 listing_sort:
     path: /listing/{listId}/sort
     controller: App\Listing\Ui\Controller\AdminController::sortProducts
+
+contribution_index:
+    path: /listing/{listId}/contribution
+    controller: App\Contribution\Ui\Controller\AdminController::index
+
+contribution_confirm:
+    path: /listing/{listId}/contribution/{contributionId}/confirm
+    controller: App\Contribution\Ui\Controller\AdminController::confirm

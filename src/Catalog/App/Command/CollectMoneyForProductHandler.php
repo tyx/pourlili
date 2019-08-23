@@ -14,7 +14,7 @@ class CollectMoneyForProductHandler
 
     public function __invoke(CollectMoneyForProduct $command)
     {
-        $product = $this->productRepository->find($command->productId()());
+        $product = $this->productRepository->find($command->productId());
 
         if (null === $product) {
             throw new \LogicException("No product with id {$command->productId()}");

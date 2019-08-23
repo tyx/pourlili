@@ -25,10 +25,10 @@ class HttpLydiaPaymentGateway implements PaymentGateway
     private $debug;
 
     public function __construct(
-        HttpClientInterface $httpClient, 
+        HttpClientInterface $httpClient,
         UrlGeneratorInterface $router,
         LoggerInterface $logger,
-        $phone = null, 
+        $phone = null,
         $debug = false
     ) {
         $this->httpClient = $httpClient;
@@ -55,11 +55,11 @@ class HttpLydiaPaymentGateway implements PaymentGateway
                             'order_ref' => $contributionId.time(),
                             'threeDSecure' => 'no',
                             'confirm_url' => $this->router->generate(
-                                'contribution_confirm', 
-                                ['contributionId' => base64_encode($contributionId)], 
+                                'contribution_confirm',
+                                ['contributionId' => base64_encode($contributionId)],
                                 UrlGeneratorInterface::ABSOLUTE_URL
                             ),
-                            'browser_success_url' => $this->router->generate('contribution_thanks', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                            'browser_success_url' => $this->router->generate('thanks', [], UrlGeneratorInterface::ABSOLUTE_URL),
                         ]
                     ]
                 )
