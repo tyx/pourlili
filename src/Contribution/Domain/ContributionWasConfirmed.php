@@ -9,4 +9,9 @@ class ContributionWasConfirmed extends AggregateChanged
     {
         return $this->payload['basket_id'];
     }
+
+    public function listId()
+    {
+        return $this->payload['list_id'];
+    }
 }

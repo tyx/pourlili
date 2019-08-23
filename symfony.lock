@@ -98,15 +98,8 @@
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
             "version": "0.4",
-            "ref": "54606aa996190da9a01cd533ad66a14a37d9b92b"
-        },
-        "files": [
-            "config/packages/prooph_event_store.yaml",
-            "src/Command/CreateEventStreamCommand.php"
-        ]
-    },
-    "prooph/standard-projections": {
-        "version": "v1.1.1"
+            "ref": "a989875619b98a288abc2b636a2b5be36b4833d6"
+        }
     },
     "psr/cache": {
         "version": "1.0.1"

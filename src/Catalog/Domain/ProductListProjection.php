@@ -54,15 +54,25 @@ class ProductListProjection implements MessageSubscriberInterface
             function ($state, $event) {
                 $state['items'] = array_map(
                     function ($item) use ($event) {
-                        if ($item['id'] === base64_encode($event->aggregateId())) {
-                            $item['alreadyCollected'] += $event->amount();
-                            $item['remainingAmountToCollect'] -= $event->amount();
-                            $item['progression'] = round($item['alreadyCollected'] / $item['price']);
+                        if ($item['id'] !== base64_encode($event->aggregateId())) {
+                            return $item;
+                        }
+                        $item['alreadyCollected'] += $event->amount();
+                        $item['remainingAmountToCollect'] -= $event->amount();
+
+                        if ($item['price'] < $item['alreadyCollected']) {
+                            $item['alreadyCollected'] = $item['price'];
+                        }
+
+                        if ($item['remainingAmountToCollect'] < 0) {
+                            $item['remainingAmountToCollect'] = 0;
                         }
 
                         if ($item['price'] <= $item['alreadyCollected']) {
                             $item['funded'] = true;
                         }
+
+                        $item['progression'] = round($item['alreadyCollected'] / $item['price']);
 
                         return $item;
                     },
