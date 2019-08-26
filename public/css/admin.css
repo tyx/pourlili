@@ -13,6 +13,32 @@ body {
     display: none;
 }
 
+.app-fab--absolute {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+}
+
+.mdc-text-field {
+    margin: 10px 0;
+}
+
+.block-center {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dashboard-card {
+    padding: 2rem;
+}
+
+@media(min-width: 1024px) {
+    .app-fab--absolute {
+        bottom: 1.5rem;
+        right: 1.5rem;
+    }
+}
+
 @media screen and (max-width: 640px) {
     .mdc-tab__text-label {
       display:none;

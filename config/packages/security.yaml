@@ -21,6 +21,9 @@ security:
                 default_target_path: admin_listing_index
                 csrf_parameter: _csrf_security_token
                 use_referer: true
+            logout:
+                path:   admin_logout
+                target: admin_login
 
     access_control:
         - { path: ^/bo/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }

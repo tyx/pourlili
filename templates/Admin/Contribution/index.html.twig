@@ -2,33 +2,37 @@
 
 {% block main %}
 <h2>Participations</h2>
-<div class="mdc-data-table" data-mdc-auto-init="MDCDataTable">
-    <table aria-label="Dessert calories" class="mdc-data-table__table">
-        <thead>
-            <tr class="mdc-data-table__header-row">
-                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Amount</th>
-                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Author</th>
-                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Status</th>
-                <th class="mdc-data-table__header-cell" role="columnheader" scope="col"></th>
-            </tr>
-        </thead>
-        <tbody class="mdc-data-table__content">
-            {% for item in contributions.items %}
-            <tr class="mdc-data-table__row" title="{{ item.id }}">
-                <td class="mdc-data-table__cell mdc-data-table__cell--numeric">{{ item.amount }}&nbsp;&euro;</td>
-                <td class="mdc-data-table__cell">{{ item.author }}</td>
-                <td class="mdc-data-table__cell">{{ item.status }}</td>
-                <td class="mdc-data-table__cell">
-                    {% if item.status == 'pending' %}
-                        <a href="{{ path('admin_contribution_confirm', { listId: list.id, contributionId: item.id }) }}" class="mdc-button">
-                            <span class="mdc-button__label">Confirmer</span>
-                        </a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% if 0 < contributions.items|default([])|length %}
+    <div class="mdc-data-table" data-mdc-auto-init="MDCDataTable">
+        <table aria-label="Dessert calories" class="mdc-data-table__table">
+            <thead>
+                <tr class="mdc-data-table__header-row">
+                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Amount</th>
+                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Author</th>
+                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Status</th>
+                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col"></th>
+                </tr>
+            </thead>
+            <tbody class="mdc-data-table__content">
+                {% for item in contributions.items|default([]) %}
+                <tr class="mdc-data-table__row" title="{{ item.id }}">
+                    <td class="mdc-data-table__cell mdc-data-table__cell--numeric">{{ item.amount }}&nbsp;&euro;</td>
+                    <td class="mdc-data-table__cell">{{ item.author }}</td>
+                    <td class="mdc-data-table__cell">{{ item.status }}</td>
+                    <td class="mdc-data-table__cell">
+                        {% if item.status == 'pending' %}
+                            <a href="{{ path('admin_contribution_confirm', { listId: list.id, contributionId: item.id }) }}" class="mdc-button">
+                                <span class="mdc-button__label">Confirmer</span>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p>Aucune contribution.</p>
+{% endif %}
 
 {% endblock %}

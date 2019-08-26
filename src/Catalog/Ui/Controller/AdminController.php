@@ -2,7 +2,9 @@
 namespace App\Catalog\Ui\Controller;
 
 use App\Catalog\Ui\Form\NewProductForm;
+use App\Listing\App\Query\ListOfId;
 use App\SharedKernel\Bridge\CommandBus;
+use App\SharedKernel\Bridge\QueryBus;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,10 +19,13 @@ class AdminController
 
     private $commandBus;
 
-    public function __construct(Environment $twig, CommandBus $commandBus)
+    private $queryBus;
+
+    public function __construct(Environment $twig, CommandBus $commandBus, QueryBus $queryBus)
     {
         $this->twig = $twig;
         $this->commandBus = $commandBus;
+        $this->queryBus = $queryBus;
     }
 
     public function new(Request $request, FormFactoryInterface $formFactory, $listId, RouterInterface $router)
@@ -49,6 +54,8 @@ class AdminController
                 'Admin/Catalog/new.html.twig',
                 [
                     'form' => $form->createView(),
+                    'list' => $this->queryBus->query(new ListOfId(Uuid::fromString(base64_decode($listId)))),
+                    'menu_item' => 'products',
                 ]
             )
         );

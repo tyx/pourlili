@@ -110,6 +110,19 @@ class AdminController
         );
     }
 
+    public function dashboard($listId)
+    {
+        return new Response(
+            $this->twig->render(
+                'Admin/Listing/dashboard.html.twig',
+                [
+                    'list' => $this->queryBus->query(new ListOfId(Uuid::fromString(base64_decode($listId)))),
+                    'menu_item' => 'dashboard',
+                ]
+            )
+        );
+    }
+
     public function enable($listId, RouterInterface $router)
     {
         $this->commandBus->execute(
@@ -117,7 +130,7 @@ class AdminController
         );
 
         return new RedirectResponse(
-            $router->generate('admin_listing_show', ['listId' => $listId])
+            $router->generate('admin_listing_dashboard', ['listId' => $listId])
         );
     }
 
@@ -128,7 +141,7 @@ class AdminController
         );
 
         return new RedirectResponse(
-            $router->generate('admin_listing_show', ['listId' => $listId])
+            $router->generate('admin_listing_dashboard', ['listId' => $listId])
         );
     }
 

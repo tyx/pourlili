@@ -1,3 +1,65 @@
+
+{% block menu %}
+<div class="mdc-tab-bar" role="tablist" data-mdc-auto-init="MDCTabBar">
+    <div class="mdc-tab-scroller">
+        <div class="mdc-tab-scroller__scroll-area">
+            <div class="mdc-tab-scroller__scroll-content">
+                {% set current_menu_item = 'dashboard' %}
+                <a href="{{ path('admin_listing_dashboard', { listId: list.id }) }}" class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
+                    <span class="mdc-tab__content">
+                        <span class="mdc-tab__icon material-icons" aria-hidden="true">dashboard</span>
+                        <span class="mdc-tab__text-label">Tableau de bord</span>
+                    </span>
+                    <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
+                        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                    </span>
+                    <span class="mdc-tab__ripple"></span>
+                </a>
+            </div>
+            <div class="mdc-tab-scroller__scroll-content">
+                {% set current_menu_item = 'products' %}
+                <a href="{{ path('admin_listing_show', { listId: list.id }) }}" class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
+                    <span class="mdc-tab__content">
+                        <span class="mdc-tab__icon material-icons" aria-hidden="true">shopping_cart</span>
+                        <span class="mdc-tab__text-label">Produits</span>
+                    </span>
+                    <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
+                        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                    </span>
+                    <span class="mdc-tab__ripple"></span>
+                </a>
+            </div>
+            <div class="mdc-tab-scroller__scroll-content">
+                {% set current_menu_item = 'contributions' %}
+                <a href="{{ path('admin_contribution_index', { listId: list.id }) }}" class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
+                    <span class="mdc-tab__content">
+                        <span class="mdc-tab__icon material-icons" aria-hidden="true">monetization_on</span>
+                        <span class="mdc-tab__text-label">Participations</span>
+                    </span>
+                    <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
+                        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                    </span>
+                    <span class="mdc-tab__ripple"></span>
+                </a>
+            </div>
+            <div class="mdc-tab-scroller__scroll-content">
+                {% set current_menu_item = 'guestbook' %}
+                <button class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
+                <span class="mdc-tab__content">
+                    <span class="mdc-tab__icon material-icons" aria-hidden="true">insert_comment</span>
+                    <span class="mdc-tab__text-label">Livre d'or</span>
+                </span>
+                <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
+                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                </span>
+                <span class="mdc-tab__ripple"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block menu_indicator_active %}
     {%- if menu_item is defined and menu_item == current_menu_item -%}
         mdc-tab-indicator--active

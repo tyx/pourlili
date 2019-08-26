@@ -1,0 +1,44 @@
+{% extends "Admin/base.html.twig" %}
+
+{% block main %}
+    <h2>
+        Tableau de bord {{ list.host }}
+        <span class="mdc-chip">
+            <span class="mdc-chip__text">{% if list.enabled %}En ligne{% else %}Hors ligne{% endif %}</span>
+        </span>
+    </h2>
+
+
+    {% if list.enabled %}
+        <a href="{{ path('admin_listing_disable', { listId: list.id }) }}" class="mdc-button mdc-button--outlined">
+            <span class="mdc-button__label">Désactiver</span>
+            <i class="material-icons mdc-button__icon" aria-hidden="true">visibility_off</i>
+        </a>
+    {% else %}
+        <a href="{{ path('admin_listing_enable', { listId: list.id }) }}" class="mdc-button mdc-button--unelevated">
+            <span class="mdc-button__label">Activer</span>
+            <i class="material-icons mdc-button__icon" aria-hidden="true">visibility</i>
+        </a>
+    {% endif %}
+
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__inner" id="dashboard-list">
+            <div class="mdc-layout-grid__cell">
+                <div class="dashboard-card mdc-elevation--z3">
+                    20 produits disponibles
+                    (sur 20)
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell">
+                <div class="dashboard-card mdc-elevation--z3">
+                    10 contributions
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell">
+                <div class="dashboard-card mdc-elevation--z3">
+                    500 € récoltés
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

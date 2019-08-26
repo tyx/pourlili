@@ -1,6 +1,6 @@
 {% import "Admin/_helper.html.twig" as helper %}
 
-{% use "Admin/_menu.html.twig" %}
+{% use 'Admin/_menu.html.twig' %}
 
 <!doctype html>
 <html lang="fr">
@@ -27,9 +27,10 @@
         <header class="mdc-top-app-bar mdc-top-app-bar--dense">
             <div class="mdc-top-app-bar__row">
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-                    <span class="mdc-top-app-bar__title">Pour Lili</span>
+                    <a href="/bo/listing" class="mdc-top-app-bar__title" style="color: #FFF">Pour Lili</a>
                 </section>
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+                    {% block choose_list %}
                     <div id="choose-list-area">
                         <div v-if="loading">
                             {{ helper.loader('loader-list', false, '#FFF') }}
@@ -51,77 +52,19 @@
                                     </ul>
                                 </div>
                             </div>
-                            <a class="mdc-button mdc-button--unelevated" href="{{ path('admin_listing_new') }}">
-                                <i class="material-icons">note_add</i>
-                            </a>
                         </template>
                     </div>
+                    {% endblock %}
+                    <a class="mdc-icon-button material-icons" href="{{ path("admin_logout") }}">power_settings_new</a>
                 </section>
             </div>
         </header>
         <main class="mdc-top-app-bar--fixed-adjust">
             {% if list is defined %}
-            <div class="mdc-tab-bar" role="tablist" data-mdc-auto-init="MDCTabBar">
-                <div class="mdc-tab-scroller">
-                    <div class="mdc-tab-scroller__scroll-area">
-                        <div class="mdc-tab-scroller__scroll-content">
-                            {% set current_menu_item = 'dashboard' %}
-                            <button class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
-                                <span class="mdc-tab__content">
-                                    <span class="mdc-tab__icon material-icons" aria-hidden="true">dashboard</span>
-                                    <span class="mdc-tab__text-label">Tableau de bord</span>
-                                </span>
-                                <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
-                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                                </span>
-                                <span class="mdc-tab__ripple"></span>
-                            </button>
-                        </div>
-                        <div class="mdc-tab-scroller__scroll-content">
-                            {% set current_menu_item = 'products' %}
-                            <a href="{{ path('admin_listing_show', { listId: list.id }) }}" class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
-                                <span class="mdc-tab__content">
-                                    <span class="mdc-tab__icon material-icons" aria-hidden="true">shopping_cart</span>
-                                    <span class="mdc-tab__text-label">Produits</span>
-                                </span>
-                                <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
-                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                                </span>
-                                <span class="mdc-tab__ripple"></span>
-                            </a>
-                        </div>
-                        <div class="mdc-tab-scroller__scroll-content">
-                            {% set current_menu_item = 'contributions' %}
-                            <a href="{{ path('admin_contribution_index', { listId: list.id }) }}" class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
-                                <span class="mdc-tab__content">
-                                    <span class="mdc-tab__icon material-icons" aria-hidden="true">monetization_on</span>
-                                    <span class="mdc-tab__text-label">Contributions</span>
-                                </span>
-                                <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
-                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                                </span>
-                                <span class="mdc-tab__ripple"></span>
-                            </a>
-                        </div>
-                        <div class="mdc-tab-scroller__scroll-content">
-                            {% set current_menu_item = 'guestbook' %}
-                            <button class="mdc-tab {{ block('menu_active') }}" role="tab" aria-selected="true" tabindex="0">
-                            <span class="mdc-tab__content">
-                                <span class="mdc-tab__icon material-icons" aria-hidden="true">insert_comment</span>
-                                <span class="mdc-tab__text-label">Livre d'or</span>
-                            </span>
-                            <span class="mdc-tab-indicator {{ block('menu_indicator_active') }}">
-                                <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                            </span>
-                            <span class="mdc-tab__ripple"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                {{ block('menu') }}
             {% endif %}
 
-            <div class="main-content">
+            <div class="main-content block-center">
             {% block main %}
             {% endblock %}
             </div>
@@ -160,7 +103,10 @@
                                 menu.MDCMenu.menuSurface_.open();
                             });
                         })
-                        .catch(error => console.log(error))
+                        .catch(error => {
+                            this.loading = false;
+                            this.errored = true;
+                        })
                     ;
                 }
             });
