@@ -33,3 +33,8 @@ contribution_index:
 contribution_confirm:
     path: /listing/{listId}/contribution/{contributionId}/confirm
     controller: App\Contribution\Ui\Controller\AdminController::confirm
+
+login:
+    path:       /login
+    controller: App\SharedKernel\Bridge\AdminSecurityController::login
+    methods: GET|POST
