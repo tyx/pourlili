@@ -1,16 +1,14 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+# all env parameters should be overloaded in your own application via .env
 parameters:
     env(CURRENT_LIST): ''
-    env(LYDIA_PHONE): '0711223344'
-    env(LYDIA_DEBUG): true
+    env(LYDIA_PHONE): '0711223344' # test phone number
+    env(LYDIA_DEBUG): true # all payment go on staging url
     env(AWS_ACCESS_KEY_ID): ''
     env(AWS_SECRET_ACCESS_KEY): ''
     env(S3_REGION): 'eu-west-3'
     env(UPLOAD_BUCKET): catalog-pourlili
+    env(ADMIN_USER): 'admin'
+    env(ADMIN_PWD): '$2y$13$AusuJkwQdq6TvYm8A3W4HuDhI7Tr.NjhN77rz4W6T22IlP5JKA0Da' # default password is : admin
     eventstore.root_dir: 's3://event-store-pourlili'
     projection.root_dir: 's3://projection-pourlili'
 

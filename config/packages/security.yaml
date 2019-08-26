@@ -1,0 +1,27 @@
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User:
+            algorithm: 'bcrypt'
+
+    providers:
+        backend_users:
+            memory:
+                users:
+                    '%env(ADMIN_USER)%': { password: '%env(ADMIN_PWD)%', roles: ['ROLE_ADMIN'] }
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            form_login:
+                login_path: admin_login
+                check_path: admin_login
+                default_target_path: admin_listing_index
+                csrf_parameter: _csrf_security_token
+                use_referer: true
+
+    access_control:
+        - { path: ^/bo/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/bo, roles: ROLE_ADMIN }
