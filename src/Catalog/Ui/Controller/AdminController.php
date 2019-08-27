@@ -1,7 +1,9 @@
 <?php
 namespace App\Catalog\Ui\Controller;
 
+use App\Catalog\App\Command\DisableProduct;
 use App\Catalog\App\Command\EditProduct;
+use App\Catalog\App\Command\EnableProduct;
 use App\Catalog\App\Query\ProductOfList;
 use App\Catalog\Ui\Form\EditProductForm;
 use App\Catalog\Ui\Form\NewProductForm;
@@ -10,6 +12,7 @@ use App\SharedKernel\Bridge\CommandBus;
 use App\SharedKernel\Bridge\QueryBus;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -111,5 +114,23 @@ class AdminController
                 ]
             )
         );
+    }
+
+    public function enable($productId)
+    {
+        $this->commandBus->execute(
+            new EnableProduct(Uuid::fromString(base64_decode($productId)))
+        );
+
+        return new JsonResponse(['status' => 'ok']);
+    }
+
+    public function disable($productId)
+    {
+        $this->commandBus->execute(
+            new DisableProduct(Uuid::fromString(base64_decode($productId)))
+        );
+
+        return new JsonResponse(['status' => 'ok']);
     }
 }

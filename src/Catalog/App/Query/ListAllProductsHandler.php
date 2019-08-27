@@ -19,6 +19,21 @@ class ListAllProductsHandler
     {
         ['items' => $items] = $this->projector->load($query->wishListId(), 'product_list')->state();
 
-        return $items ?? [];
+        $items = $items ?? [];
+
+        if (true === $query->onlyEnabled()) {
+            $items = array_filter(
+                $items,
+                function ($item) {
+                    if (array_key_exists('enabled', $item)) {
+                        return $item['enabled'];
+                    }
+
+                    return true;
+                }
+            );
+        }
+
+        return $items;
     }
 }

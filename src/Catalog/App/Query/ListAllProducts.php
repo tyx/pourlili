@@ -7,13 +7,21 @@ class ListAllProducts
 {
     private $wishListId;
 
-    public function __construct(string $wishListId)
+    private $onlyEnabled;
+
+    public function __construct(string $wishListId, bool $onlyEnabled = false)
     {
         $this->wishListId = $wishListId;
+        $this->onlyEnabled = $onlyEnabled;
     }
 
     public function wishListId(): string
     {
         return $this->wishListId;
+    }
+
+    public function onlyEnabled(): bool
+    {
+        return $this->onlyEnabled;
     }
 }

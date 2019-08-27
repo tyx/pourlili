@@ -29,6 +29,8 @@ final class Product extends AggregateRoot
 
     private $alreadyCollected = 0;
 
+    private $enabled = true;
+
     public static function register(Uuid $id, Uuid $listId, string $name, float $price, string $description, ?string $imagePath)
     {
         $self = new static;
@@ -47,6 +49,10 @@ final class Product extends AggregateRoot
 
     public function collect(float $amount)
     {
+        if ($this->isFunded()) {
+            throw new \LogicException('Product is already funded');
+        }
+
         $this->recordThat(
             MoneyWasCollected::occur($this->aggregateId(), ['amount' => $amount, 'list_id' => $this->listId->toString()])
         );
@@ -80,6 +86,10 @@ final class Product extends AggregateRoot
             return;
         }
 
+        if (0 < $this->alreadyCollected) {
+            throw new \LogicException('Cannot change price of product with money already collected');
+        }
+
         $this->recordThat(
             ProductPriceWasChanged::occur($this->aggregateId(), ['list_id' => $this->listId->toString(), 'new_price' => $newPrice])
         );
@@ -100,6 +110,28 @@ final class Product extends AggregateRoot
     {
         $this->recordThat(
             ImageOfProductWasUploaded::occur($this->aggregateId(), ['path' => $path, 'list_id' => $this->listId->toString()])
+        );
+    }
+
+    public function disable()
+    {
+        if (false === $this->enabled) {
+            return;
+        }
+
+        $this->recordThat(
+            ProductWasDisabled::occur($this->aggregateId(), ['list_id' => $this->listId->toString()])
+        );
+    }
+
+    public function enable()
+    {
+        if (true === $this->enabled) {
+            return;
+        }
+
+        $this->recordThat(
+            ProductWasEnabled::occur($this->aggregateId(), ['list_id' => $this->listId->toString()])
         );
     }
 
@@ -127,6 +159,12 @@ final class Product extends AggregateRoot
             case ProductImageWasChanged::class:
                 $this->originalImagePath = $event->imagePath();
                 break;
+            case ProductWasDisabled::class:
+                $this->enabled = false;
+                break;
+            case ProductWasEnabled::class:
+                $this->enabled = true;
+                break;
             case MoneyWasCollected::class:
                 $this->alreadyCollected += $event->amount();
                 break;
@@ -134,5 +172,10 @@ final class Product extends AggregateRoot
                 $this->uploadedImagePath = $event->path();
                 break;
         }
+    }
+
+    private function isFunded()
+    {
+        return $this->price <= $this->alreadyCollected;
     }
 }
