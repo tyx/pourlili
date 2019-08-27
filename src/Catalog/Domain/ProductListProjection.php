@@ -13,6 +13,8 @@ use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
  */
 class ProductListProjection implements MessageSubscriberInterface
 {
+    public const NAME = 'product_list';
+
     private $projector;
 
     public function __construct(Projector $projector)
@@ -23,20 +25,20 @@ class ProductListProjection implements MessageSubscriberInterface
     public function handleProductWasRegistered(ProductWasRegistered $event)
     {
         $this->projector->updateProjection(
-            'product_list',
+            self::NAME,
             $event,
             function ($state, $event) {
                 $state['items'] = $state['items'] ?? [];
 
                 $state['items'][] = [
                     'id' => base64_encode($event->aggregateId()),
-                    'name' => $event->name(),
-                    'price' => $event->price(),
+                    'name' => null,
+                    'price' => null,
                     'image' => null,
-                    'description' => $event->description(),
+                    'description' => null,
                     'funded' => false,
                     'alreadyCollected' => 0,
-                    'remainingAmountToCollect' => $event->price(),
+                    'remainingAmountToCollect' => null,
                     'progression' => 0,
                 ];
 
@@ -49,7 +51,7 @@ class ProductListProjection implements MessageSubscriberInterface
     public function handleMoneyWasCollected(MoneyWasCollected $event)
     {
         $this->projector->updateProjection(
-            'product_list',
+            self::NAME,
             $event,
             function ($state, $event) {
                 $state['items'] = array_map(
@@ -88,7 +90,7 @@ class ProductListProjection implements MessageSubscriberInterface
     public function handleProductImage(ImageOfProductWasUploaded $event)
     {
         $this->projector->updateProjection(
-            'product_list',
+            self::NAME,
             $event,
             function ($state, $event) {
                 $state['items'] = array_map(
@@ -108,14 +110,83 @@ class ProductListProjection implements MessageSubscriberInterface
         );
     }
 
+    public function handleProductName(ProductWasRenamed $event)
+    {
+        $this->projector->updateProjection(
+            self::NAME,
+            $event,
+            function ($state, $event) {
+                $state['items'] = array_map(
+                    function ($item) use ($event) {
+                        if ($item['id'] === base64_encode($event->aggregateId())) {
+                            $item['name'] = $event->name();
+                        }
+
+                        return $item;
+                    },
+                    $state['items'] ?? []
+                );
+
+                return $state;
+            },
+            $event->listId()
+        );
+    }
+
+    public function handleProductDescription(ProductWasDescribed $event)
+    {
+        $this->projector->updateProjection(
+            self::NAME,
+            $event,
+            function ($state, $event) {
+                $state['items'] = array_map(
+                    function ($item) use ($event) {
+                        if ($item['id'] === base64_encode($event->aggregateId())) {
+                            $item['description'] = $event->description();
+                        }
+
+                        return $item;
+                    },
+                    $state['items'] ?? []
+                );
+
+                return $state;
+            },
+            $event->listId()
+        );
+    }
+
+    public function handleProductPrice(ProductPriceWasChanged $event)
+    {
+        $this->projector->updateProjection(
+            self::NAME,
+            $event,
+            function ($state, $event) {
+                $state['items'] = array_map(
+                    function ($item) use ($event) {
+                        if ($item['id'] === base64_encode($event->aggregateId())) {
+                            $item['remainingAmountToCollect'] = $item['price'] = $event->price();
+                        }
+
+                        return $item;
+                    },
+                    $state['items'] ?? []
+                );
+
+                return $state;
+            },
+            $event->listId()
+        );
+    }
+
     public function handleSortList(ProductListWasSorted $event)
     {
         $this->projector->updateProjection(
-            'product_list',
+            self::NAME,
             $event,
             function ($state, $event) {
                 $state['items'] = $this->sortProducts($state['items'], $event->sort());
-                dump($state['items']);
+
                 return $state;
             }
         );
@@ -125,6 +196,18 @@ class ProductListProjection implements MessageSubscriberInterface
     {
         yield ProductWasRegistered::class => [
             'method' => 'handleProductWasRegistered',
+            'bus' => 'event.bus',
+        ];
+        yield ProductWasRenamed::class => [
+            'method' => 'handleProductName',
+            'bus' => 'event.bus',
+        ];
+        yield ProductWasDescribed::class => [
+            'method' => 'handleProductDescription',
+            'bus' => 'event.bus',
+        ];
+        yield ProductPriceWasChanged::class => [
+            'method' => 'handleProductPrice',
             'bus' => 'event.bus',
         ];
         yield MoneyWasCollected::class => [

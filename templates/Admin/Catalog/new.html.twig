@@ -1,7 +1,9 @@
 {% extends "Admin/base.html.twig" %}
 
 {% block main %}
-    <h2>Nouveau produit</h2>
+    {% block main_title %}
+        <h2>Nouveau produit</h2>
+    {% endblock %}
     {{ form_start(form) }}
     <div>
         <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">

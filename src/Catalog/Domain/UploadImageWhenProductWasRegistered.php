@@ -24,7 +24,7 @@ class UploadImageWhenProductWasRegistered implements MessageSubscriberInterface
         $this->commandBus = $commandBus;
     }
 
-    public function uploadImage(ProductWasRegistered $event)
+    public function uploadImage(ProductImageWasChanged $event)
     {
         $image = $this->imageUploader->upload($event->imagePath(), $event->aggregateId(), 300);
 
@@ -42,7 +42,7 @@ class UploadImageWhenProductWasRegistered implements MessageSubscriberInterface
 
     public static function getHandledMessages(): iterable
     {
-        yield ProductWasRegistered::class => [
+        yield ProductImageWasChanged::class => [
             'method' => 'uploadImage',
             'bus' => 'event.bus',
         ];

@@ -1,6 +1,9 @@
 <?php
 namespace App\Catalog\Ui\Controller;
 
+use App\Catalog\App\Command\EditProduct;
+use App\Catalog\App\Query\ProductOfList;
+use App\Catalog\Ui\Form\EditProductForm;
 use App\Catalog\Ui\Form\NewProductForm;
 use App\Listing\App\Query\ListOfId;
 use App\SharedKernel\Bridge\CommandBus;
@@ -52,6 +55,55 @@ class AdminController
         return new Response(
             $this->twig->render(
                 'Admin/Catalog/new.html.twig',
+                [
+                    'form' => $form->createView(),
+                    'list' => $this->queryBus->query(new ListOfId(Uuid::fromString(base64_decode($listId)))),
+                    'menu_item' => 'products',
+                ]
+            )
+        );
+    }
+
+    public function edit(Request $request, FormFactoryInterface $formFactory, $listId, $productId, RouterInterface $router)
+    {
+        $product = $this->queryBus->query(
+            new ProductOfList(base64_decode($listId), $productId)
+        );
+        unset($product['image']); // image input is only to add
+
+        $form = $formFactory->create(
+            EditProductForm::class,
+            $product
+        );
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            [
+                'name' => $name,
+                'description' => $description,
+                'price' => $price,
+                'image' => $image
+            ] = $form->getData();
+
+            $this->commandBus->execute(
+                new EditProduct(
+                    Uuid::fromString(base64_decode($productId)),
+                    $name,
+                    $price,
+                    $image,
+                    $description
+                )
+            );
+
+            return new RedirectResponse(
+                $router->generate('admin_listing_show', ['listId' => $listId])
+            );
+        }
+
+        return new Response(
+            $this->twig->render(
+                'Admin/Catalog/edit.html.twig',
                 [
                     'form' => $form->createView(),
                     'list' => $this->queryBus->query(new ListOfId(Uuid::fromString(base64_decode($listId)))),

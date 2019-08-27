@@ -5,5 +5,5 @@ namespace App\Catalog\Domain;
 
 interface ImageUploader
 {
-    public function upload(string $path, string $name, int $maxHeight);
+    public function upload(string $path, string $name, int $maxHeight): string;
 }
