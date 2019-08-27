@@ -6,6 +6,11 @@ use Prooph\EventSourcing\AggregateChanged;
 use Prooph\EventSourcing\AggregateRoot;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * Dedicated aggregate because product could have many changes.
+ * But we need to improve ProductList and Product collaboration.
+ * Currently the only way to build a projection to list all products is to add list_id in all events.
+ */
 final class Product extends AggregateRoot
 {
     private $id;
@@ -28,8 +33,14 @@ final class Product extends AggregateRoot
     {
         $self = new static;
         $self->recordThat(
-            ProductWasRegistered::record($id->toString(), $listId->toString(), $name, $price, $description, $imagePath)
+            ProductWasRegistered::record($id->toString(), $listId->toString())
         );
+        $self->rename($name);
+        $self->describe($description);
+        $self->changePrice($price);
+        if (null !== $imagePath) {
+            $self->changeImage($imagePath);
+        };
 
         return $self;
     }
@@ -38,6 +49,50 @@ final class Product extends AggregateRoot
     {
         $this->recordThat(
             MoneyWasCollected::occur($this->aggregateId(), ['amount' => $amount, 'list_id' => $this->listId->toString()])
+        );
+    }
+
+    public function rename(string $newName)
+    {
+        if ($this->name === $newName) {
+            return;
+        }
+
+        $this->recordThat(
+            ProductWasRenamed::occur($this->aggregateId(), ['list_id' => $this->listId->toString(), 'new_name' => $newName])
+        );
+    }
+
+    public function describe(string $newDescription)
+    {
+        if ($this->description === $newDescription) {
+            return;
+        }
+
+        $this->recordThat(
+            ProductWasDescribed::occur($this->aggregateId(), ['list_id' => $this->listId->toString(), 'new_description' => $newDescription])
+        );
+    }
+
+    public function changePrice(float $newPrice)
+    {
+        if ($this->price === $newPrice) {
+            return;
+        }
+
+        $this->recordThat(
+            ProductPriceWasChanged::occur($this->aggregateId(), ['list_id' => $this->listId->toString(), 'new_price' => $newPrice])
+        );
+    }
+
+    public function changeImage(string $originalPath)
+    {
+        if ($this->originalImagePath === $originalPath) {
+            return;
+        }
+
+        $this->recordThat(
+            ProductImageWasChanged::occur($this->aggregateId(), ['list_id' => $this->listId->toString(), 'new_original_image' => $originalPath])
         );
     }
 
@@ -57,29 +112,27 @@ final class Product extends AggregateRoot
     {
         switch ($event->messageName()) {
             case ProductWasRegistered::class:
-                $this->whenProductWasRegistered($event);
+                $this->id = Uuid::fromString($event->aggregateId());
+                $this->listId = Uuid::fromString($event->listId());
+                break;
+            case ProductWasRenamed::class:
+                $this->name = $event->name();
+                break;
+            case ProductPriceWasChanged::class:
+                $this->price = $event->price();
+                break;
+            case ProductWasDescribed::class:
+                $this->description = $event->description();
+                break;
+            case ProductImageWasChanged::class:
+                $this->originalImagePath = $event->imagePath();
                 break;
             case MoneyWasCollected::class:
-                $this->whenMoneyWasCollected($event);
+                $this->alreadyCollected += $event->amount();
                 break;
             case ImageOfProductWasUploaded::class:
                 $this->uploadedImagePath = $event->path();
                 break;
         }
-    }
-
-    private function whenProductWasRegistered(ProductWasRegistered $change)
-    {
-        $this->id = Uuid::fromString($change->aggregateId());
-        $this->listId = Uuid::fromString($change->listId());
-        $this->name = $change->name();
-        $this->price = $change->price();
-        $this->originalImagePath = $change->imagePath();
-        $this->description = $change->description();
-    }
-
-    private function whenMoneyWasCollected(MoneyWasCollected $change)
-    {
-        $this->alreadyCollected += $change->amount();
     }
 }

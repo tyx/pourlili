@@ -29,7 +29,7 @@ class S3ImageUploader implements ImageUploader
         $this->thumbnailGenerator = $thumbnailGenerator;
     }
 
-    public function upload(string $path, string $name, int $maxHeight)
+    public function upload(string $path, string $name, int $maxHeight): string
     {
         $response = $this->httpClient->request('GET', $path, [
             'buffer' => false,
