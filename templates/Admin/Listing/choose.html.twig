@@ -1,5 +1,7 @@
 {% extends "Admin/base.html.twig" %}
 
+{% block choose_list %}{% endblock %}
+
 {% block main %}
     <form method="post">
         <div class="mdc-select mdc-select--outlined" data-mdc-auto-init="MDCSelect">
@@ -21,4 +23,7 @@
         </div>
         <button class="mdc-button mdc-button--unelevated" type="submit">Ok</button>
     </form>
+    <a href="{{ path('admin_listing_new') }}" class="mdc-fab app-fab--absolute" aria-label="Nouvelle liste">
+        <span class="mdc-fab__icon material-icons">add</span>
+    </a>
 {% endblock %}

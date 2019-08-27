@@ -2,7 +2,7 @@
 
 {% block main %}
     <h2>Commencer une nouvelle list</h2>
-    {{ form_start(form) }}
+    {{ form_start(form, { 'class': 'block-center' }) }}
     <div>
         <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
             {{ form_widget(form.host, { attr: { class: "mdc-text-field__input" }}) }}
