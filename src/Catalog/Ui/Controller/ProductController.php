@@ -26,7 +26,7 @@ class ProductController
             $this->twig->render(
                 'Catalog/index.html.twig',
                 [
-                    'products' => $this->queryBus->query(new ListAllProducts($currentList)),
+                    'products' => $this->queryBus->query(new ListAllProducts($currentList, true)),
                 ]
             ),
             Response::HTTP_OK
