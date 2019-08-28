@@ -3,28 +3,18 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Projection;
 
-class Projection
+final class Projection
 {
-    private $aggregateId;
-
     private $name;
 
-    private $state;
+    private $id;
 
-    public function __construct($aggregateId, $name)
+    private $state = null;
+
+    public function __construct(string $name, ?string $id = null)
     {
-        $this->aggregateId = $aggregateId;
         $this->name = $name;
-    }
-
-    public function loadState($state)
-    {
-        $this->state = $state;
-    }
-
-    public function aggregateId(): string
-    {
-        return $this->aggregateId;
+        $this->id = $id;
     }
 
     public function name(): string
@@ -32,13 +22,30 @@ class Projection
         return $this->name;
     }
 
+    public function id(): string
+    {
+        if (null === $this->id) {
+            return $this->name;
+        }
+
+        return "{$this->name}-{$this->id}";
+    }
+
     public function state()
     {
         return $this->state;
     }
 
-    public function update($event, callable $updator)
+    public function hash(): string
     {
-        $this->state = $updator($this->state, $event);
+        return sha1($this->name);
+    }
+
+    public function withState($state): self
+    {
+        $self = new self($this->name, $this->id);
+        $self->state = $state;
+
+        return $self;
     }
 }

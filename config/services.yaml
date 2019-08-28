@@ -20,10 +20,13 @@ services:
         bind:
             $eventBus: '@event.bus'
             $currentList: '%env(string:CURRENT_LIST)%'
+    _instanceof:
+        App\SharedKernel\Projection\ProjectionRunner:
+            tags: ['projection.runner']
 
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php,*/Infra/Prooph*}'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php,*/Infra/Prooph*,SharedKernel/Projection/Projector*}'
 
     App\SharedKernel\Infra\Persistence\FileSystemEventStore:
         arguments:
@@ -47,9 +50,18 @@ services:
         tags:
             - { name: 'prooph_event_store.plugin' }
 
-    App\SharedKernel\Projection\Projector:
+    App\SharedKernel\Bridge\ProjectionProophBridge:
+        tags:
+            - { name: 'prooph_event_store.plugin' }
+
+    App\SharedKernel\Projection\Projections:
+        arguments:
+            $collection: !tagged { tag: 'projection.runner' }
+
+    App\SharedKernel\Projection\ProjectionStore:
         arguments:
             - '%projection.root_dir%'
+
 
     App\SharedKernel\Bridge\QueryBus:
         autowire: false

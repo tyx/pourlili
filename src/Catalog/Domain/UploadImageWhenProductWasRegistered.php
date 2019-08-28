@@ -26,9 +26,9 @@ class UploadImageWhenProductWasRegistered implements MessageSubscriberInterface
 
     public function uploadImage(ProductImageWasChanged $event)
     {
-        $image = $this->imageUploader->upload($event->imagePath(), $event->aggregateId(), 300);
-
-        if (false === $image) {
+        try {
+            $image = $this->imageUploader->upload($event->imagePath(), $event->aggregateId(), 300);
+        } catch (\Exception $e) {
             $this->logger->error("Cannot upload image : {$event->imagePath()}");
 
             return;

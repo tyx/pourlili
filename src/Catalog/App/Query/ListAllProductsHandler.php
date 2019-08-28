@@ -3,23 +3,22 @@ declare(strict_types=1);
 
 namespace App\Catalog\App\Query;
 
-use App\Catalog\Domain\ProductView;
-use App\SharedKernel\Projection\Projector;
+use App\SharedKernel\Projection\ProjectionStore;
 
 class ListAllProductsHandler
 {
     private $projector;
 
-    public function __construct(Projector $projector)
+    public function __construct(ProjectionStore $projector)
     {
         $this->projector = $projector;
     }
 
     public function __invoke(ListAllProducts $query): iterable
     {
-        ['items' => $items] = $this->projector->load($query->wishListId(), 'product_list')->state();
+        $list = $this->projector->load('product_list', $query->wishListId())->state();
 
-        $items = $items ?? [];
+        $items = $list['items'] ?? [];
 
         if (true === $query->onlyEnabled()) {
             $items = array_filter(

@@ -4,7 +4,7 @@ namespace App\Catalog\Domain;
 use App\Catalog\App\Command\CollectMoneyForProduct;
 use App\Contribution\Domain\ContributionWasConfirmed;
 use App\SharedKernel\Bridge\CommandBus;
-use App\SharedKernel\Projection\Projector;
+use App\SharedKernel\Projection\ProjectionStore;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
@@ -14,7 +14,7 @@ class CollectMoneyWhenContributionConfirmed implements MessageSubscriberInterfac
 
     private $commandBus;
 
-    public function __construct(Projector $projector, CommandBus $commandBus)
+    public function __construct(ProjectionStore $projector, CommandBus $commandBus)
     {
         $this->projector = $projector;
         $this->commandBus = $commandBus;
@@ -22,7 +22,7 @@ class CollectMoneyWhenContributionConfirmed implements MessageSubscriberInterfac
 
     public function handleContributionWasConfirmed(ContributionWasConfirmed $event)
     {
-        $basket = $this->projector->load($event->basketId(), 'basket_index')->state();
+        $basket = $this->projector->load('basket_index', $event->basketId())->state();
 
         foreach ($basket['items'] as $product) {
             $this->commandBus->execute(
