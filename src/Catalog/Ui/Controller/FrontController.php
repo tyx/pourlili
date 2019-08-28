@@ -8,7 +8,7 @@ use App\SharedKernel\Bridge\QueryBus;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 
-class ProductController
+class FrontController
 {
     private $twig;
 
@@ -24,7 +24,7 @@ class ProductController
     {
         return new Response(
             $this->twig->render(
-                'Catalog/index.html.twig',
+                'FrontOffice/Catalog/index.html.twig',
                 [
                     'products' => $this->queryBus->query(new ListAllProducts($currentList, true)),
                 ]

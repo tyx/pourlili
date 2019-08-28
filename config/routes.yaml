@@ -1,42 +1,42 @@
 product_index:
    path: /
    methods: [GET]
-   controller: App\Catalog\Ui\Controller\ProductController::index
+   controller: App\Catalog\Ui\Controller\FrontController::index
 
 basket_index:
    path: /cart
    methods: [GET]
-   controller: App\Basket\Ui\Controller\BasketController::index
+   controller: App\Basket\Ui\Controller\FrontController::index
 
 basket_cancel:
    path: /cart/cancel
    methods: [GET]
-   controller: App\Basket\Ui\Controller\BasketController::cancel
+   controller: App\Basket\Ui\Controller\FrontController::cancel
 
 basket_add:
    path: /cart
    methods: [POST]
-   controller: App\Basket\Ui\Controller\BasketController::addProduct
+   controller: App\Basket\Ui\Controller\FrontController::addProduct
 
 thanks:
    path: /thanks
    methods: [GET]
-   controller: App\Basket\Ui\Controller\BasketController::thanks
+   controller: App\Basket\Ui\Controller\FrontController::thanks
 
 contribution_checkout:
    path: /checkout
    methods: [GET, POST]
-   controller: App\Contribution\Ui\Controller\ContributionController::checkout
+   controller: App\Contribution\Ui\Controller\FrontController::checkout
 
 contribution_confirm:
    path: /confirm/{contributionId}
-   controller: App\Contribution\Ui\Controller\ContributionController::confirm
+   controller: App\Contribution\Ui\Controller\FrontController::confirm
 
 waiting:
    path: /waiting.html
-   controller:   Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+   controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
    defaults:
-      template: waiting.html.twig
+      template: FrontOffice/waiting.html.twig
    methods: GET
 
 bo:
