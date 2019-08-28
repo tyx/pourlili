@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 
-class BasketController
+class FrontController
 {
     private $twig;
 
@@ -37,7 +37,7 @@ class BasketController
         if (null === $basketId) {
             return new Response(
                 $this->twig->render(
-                    'Basket/empty.html.twig'
+                    'FrontOffice/Basket/empty.html.twig'
                 ),
                 Response::HTTP_OK
             );
@@ -45,7 +45,7 @@ class BasketController
 
         return new Response(
             $this->twig->render(
-                'Basket/index.html.twig',
+                'FrontOffice/Basket/index.html.twig',
                 [
                    'basket' => $this->queryBus->query(new ShowBasket($basketId))
                 ]
@@ -100,7 +100,7 @@ class BasketController
 
         return new Response(
             $this->twig->render(
-                'Contribution/thanks.html.twig'
+                'FrontOffice/Contribution/thanks.html.twig'
             ),
             Response::HTTP_OK
         );

@@ -1,7 +1,7 @@
-{% extends 'layout.html.twig' %}
+{% extends 'FrontOffice/layout.html.twig' %}
 
 {% block menu %}
-    {% include '_menu.html.twig' with {'active' : 'product'} %}
+    {% include 'FrontOffice/_menu.html.twig' with {'active' : 'product'} %}
 {% endblock %}
 
 {% block body %}
@@ -96,7 +96,7 @@
     'use strict';
     var snackbarContainer = document.querySelector('#snackbar');
     var snackHandler = function (event) {
-        document.location.href = "/cart"
+        document.location.href = '{{ path('basket_index') }}'
     };
     var dialog = document.querySelector('#dialog');
     var contributionForm = document.querySelector('#dialog form');

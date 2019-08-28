@@ -15,10 +15,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 
-class ContributionController
+class FrontController
 {
     private $twig;
 
@@ -73,7 +72,7 @@ class ContributionController
 
         return new Response(
             $this->twig->render(
-                'Contribution/checkout.html.twig',
+                'FrontOffice/Contribution/checkout.html.twig',
                 [
                     'form' => $form->createView(),
                 ]
