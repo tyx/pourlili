@@ -40,6 +40,7 @@ class ProductListProjection implements MessageSubscriberInterface
                     'alreadyCollected' => 0,
                     'remainingAmountToCollect' => null,
                     'progression' => 0,
+                    'enabled' => true,
                 ];
 
                 return $state;
@@ -156,6 +157,52 @@ class ProductListProjection implements MessageSubscriberInterface
         );
     }
 
+    public function handleProductEnabled(ProductWasEnabled $event)
+    {
+        $this->projector->updateProjection(
+            self::NAME,
+            $event,
+            function ($state, $event) {
+                $state['items'] = array_map(
+                    function ($item) use ($event) {
+                        if ($item['id'] === base64_encode($event->aggregateId())) {
+                            $item['enabled'] = true;
+                        }
+
+                        return $item;
+                    },
+                    $state['items'] ?? []
+                );
+
+                return $state;
+            },
+            $event->listId()
+        );
+    }
+
+    public function handleProductDisabled(ProductWasDisabled $event)
+    {
+        $this->projector->updateProjection(
+            self::NAME,
+            $event,
+            function ($state, $event) {
+                $state['items'] = array_map(
+                    function ($item) use ($event) {
+                        if ($item['id'] === base64_encode($event->aggregateId())) {
+                            $item['enabled'] = false;
+                        }
+
+                        return $item;
+                    },
+                    $state['items'] ?? []
+                );
+
+                return $state;
+            },
+            $event->listId()
+        );
+    }
+
     public function handleProductPrice(ProductPriceWasChanged $event)
     {
         $this->projector->updateProjection(
@@ -208,6 +255,14 @@ class ProductListProjection implements MessageSubscriberInterface
         ];
         yield ProductPriceWasChanged::class => [
             'method' => 'handleProductPrice',
+            'bus' => 'event.bus',
+        ];
+        yield ProductWasEnabled::class => [
+            'method' => 'handleProductEnabled',
+            'bus' => 'event.bus',
+        ];
+        yield ProductWasDisabled::class => [
+            'method' => 'handleProductDisabled',
             'bus' => 'event.bus',
         ];
         yield MoneyWasCollected::class => [

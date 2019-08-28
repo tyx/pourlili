@@ -7,6 +7,9 @@
 {% endblock %}
 
 {% block main %}
+    <script id="products-source" type="application/json">
+        {{ items | json_encode | raw }}
+    </script>
     <h2>Produits</h2>
     <a href="{{ path('admin_product_new', { listId: list.id }) }}" class="mdc-fab app-fab--absolute" aria-label="Nouvelle liste">
         <span class="mdc-fab__icon material-icons">add</span>
@@ -49,8 +52,11 @@
                         </div>
                         <div class="mdc-card__actions">
                             <div class="mdc-card__action-buttons">
-                                <a class="mdc-button mdc-card__action mdc-card__action--button" href="{{ path('admin_product_edit', { listId: list.id, productId: item.id })}}">Modifier</a>
-                                <a class="mdc-button mdc-card__action mdc-card__action--button" href="">Désactiver</a>
+                                <a class="mdc-button mdc-card__action mdc-card__action--button" href="{{ path('admin_product_edit', { listId: list.id, productId: item.id })}}">
+                                    <span class="mdc-button__label">Modifier</span>
+                                </a>
+                                <a class="mdc-button mdc-card__action mdc-card__action--button" v-if="productEnabled({{ loop.index0 }})" v-on:click="goHref($event, {{ loop.index0 }})" href="{{ path('admin_product_disable', { productId: item.id })}}">Désactiver<span v-html="loader({{ loop.index0 }})"></span></a>
+                                <a class="mdc-button mdc-card__action mdc-card__action--button" v-else v-on:click="goHref($event, {{ loop.index0 }})" href="{{ path('admin_product_enable', { productId: item.id })}}">Activer<span v-html="loader({{ loop.index0 }})"></span></a>
                             </div>
                         </div>
                     </div>
@@ -78,6 +84,60 @@
 {% block end_js %}
     {{ parent() }}
     <script>
+    new Vue({
+        delimiters: ['${', '}'],
+        el: '#product-list' ,
+        data () {
+            return {
+                loading: [],
+                products: [],
+            }
+        },
+        created: function () {
+            this.products = JSON.parse(document.getElementById('products-source').innerHTML);
+            if (null === this.products) {
+                this.products = [];
+            }
+        },
+        methods: {
+            productEnabled(index) {
+                if (this.products[index].enabled === undefined) {
+                    return true;
+                }
+
+                return this.products[index].enabled;
+            },
+            goHref(event, index) {
+                this.loading.push(index);
+                const element = event.target;
+                event.preventDefault();
+                fetch(element.href, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-type': 'application/json',
+                    }
+                })
+                    .then(response => response.json())
+                    .then(payload => {
+                        this.products[index].enabled = !this.products[index].enabled;
+                        openSnackbar('Statut modifié');
+                        this.loading.splice(this.loading.indexOf(index), 1);
+                    })
+                    .catch(error => {
+                        openSnackbar('Une erreur est survenue');
+                        this.loading.splice(this.loading.indexOf(index), 1);
+                    })
+                ;
+            },
+            loader(index) {
+                if (this.loading.includes(index)) {
+                    return '<span class="loading"><span>';
+                }
+            }
+        }
+    });
+
     new Sortable(document.getElementById('product-list'), {
         handle: '.demo-card__primary', // handle's class
         animation: 150,

@@ -18,6 +18,16 @@ product_edit:
     path: /listing/{listId}/product/{productId}/edit
     controller: App\Catalog\Ui\Controller\AdminController::edit
 
+product_disable:
+    path: /product/{productId}/disable
+    controller: App\Catalog\Ui\Controller\AdminController::disable
+    methods: POST
+
+product_enable:
+    path: /product/{productId}/enable
+    controller: App\Catalog\Ui\Controller\AdminController::enable
+    methods: POST
+
 listing_enable:
     path: /listing/{listId}/enable
     controller: App\Listing\Ui\Controller\AdminController::enable
