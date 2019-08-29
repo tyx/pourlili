@@ -13,6 +13,20 @@
             </div>
         </div>
     </div>
+    <div>
+        <div class="mdc-select mdc-select--outlined" data-mdc-auto-init="MDCSelect">
+            <i class="mdc-select__dropdown-icon"></i>
+            {{ form_widget(form.origin, { attr: { class: "mdc-select__native-control" }}) }}
+            <div class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched">
+                <div class="mdc-notched-outline__leading"></div>
+                <div class="mdc-notched-outline__notch">
+                    {{ form_label(form.origin, null, { label_attr: { class: "mdc-floating-label mdc-floating-label--float-above" }}) }}
+                </div>
+                <div class="mdc-notched-outline__trailing"></div>
+            </div>
+            <div class="mdc-line-ripple"></div>
+        </div>
+    </div>
 
     <div>
         <button class="mdc-button mdc-button--unelevated" type="submit">Commencer</button>

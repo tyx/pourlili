@@ -19,7 +19,9 @@ class RegisterNewProduct
 
     private $description;
 
-    public function __construct(UuidInterface $listId, UuidInterface $id, string $name, ?float $price, ?string $imagePath, string $description)
+    private $uploadedPath;
+
+    public function __construct(UuidInterface $listId, UuidInterface $id, string $name, ?float $price, ?string $imagePath, string $description, ?string $uploadedPath = null)
     {
         $this->listId = $listId;
         $this->id = $id;
@@ -27,6 +29,7 @@ class RegisterNewProduct
         $this->price = $price;
         $this->imagePath = $imagePath;
         $this->description = $description;
+        $this->uploadedPath = $uploadedPath;
     }
 
     public function listId(): UuidInterface
@@ -57,5 +60,10 @@ class RegisterNewProduct
     public function description(): string
     {
         return $this->description;
+    }
+
+    public function uploadedPath(): ?string
+    {
+        return $this->uploadedPath;
     }
 }

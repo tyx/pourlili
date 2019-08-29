@@ -13,6 +13,7 @@ use App\Listing\App\Query\ListOfId;
 use App\SharedKernel\Bridge\CommandBus;
 use App\SharedKernel\Bridge\QueryBus;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -84,8 +85,17 @@ class AdminController
 
     public function new(Request $request, RouterInterface $router, FormFactoryInterface $formFactory)
     {
+        $lists = $this->queryBus->query(new AllLists());
         $form = $formFactory->createBuilder()
             ->add('host', TextType::class)
+            ->add('origin', ChoiceType::class, [
+                'choices' => array_combine(
+                    array_column($lists, 'host'),
+                    array_column($lists, 'id')
+                ),
+                'placeholder' => 'Copier depuis',
+                'required' => false
+            ])
             ->getForm()
         ;
 
@@ -94,7 +104,13 @@ class AdminController
         if ($form->isSubmitted() && $form->isValid()) {
             $id = Uuid::uuid4();
             $host = $form->get('host')->getData();
-            $this->commandBus->execute(new StartList($id, $host));
+            $origin = $form->get('origin')->getData();
+            if (null !== $origin) {
+                $origin = Uuid::fromString(base64_decode($origin));
+            }
+            $this->commandBus->execute(
+                new StartList($id, $host, $origin)
+            );
 
             return new RedirectResponse(
                 $router->generate('admin_listing_show', ['listId' => base64_encode($id->toString())])

@@ -16,7 +16,7 @@ class StartListHandler
     public function __invoke(StartList $command)
     {
         $this->productListRepository->save(
-            ProductList::start($command->id(), $command->host())
+            ProductList::start($command->id(), $command->host(), $command->originId())
         );
     }
 }

@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace App\Listing\Domain;
 
-use Ramsey\Uuid\Uuid;
-use Prooph\EventSourcing\AggregateRoot;
 use Prooph\EventSourcing\AggregateChanged;
+use Prooph\EventSourcing\AggregateRoot;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * For now Products will live inside List AR. We definitively need to think to move them in a dedicated AR ?
@@ -20,11 +21,13 @@ final class ProductList extends AggregateRoot
 
     private $sortedProducts = [];
 
-    public static function start(Uuid $id, string $host)
+    private $originId;
+
+    public static function start(?UuidInterface $id, string $host, ?UuidInterface $originId = null)
     {
         $self = new self();
         $self->recordThat(
-            ProductListWasStarted::record($id->toString(), $host)
+            ProductListWasStarted::record($id->toString(), $host, $originId ? $originId->toString() : null)
         );
 
         return $self;
@@ -83,5 +86,6 @@ final class ProductList extends AggregateRoot
         $this->id = Uuid::fromString($change->aggregateId());
         $this->host = $change->host();
         $this->enabled = false;
+        $this->originId = $change->originId();
     }
 }
