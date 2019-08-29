@@ -8,6 +8,7 @@ use App\Listing\App\Command\EnableList;
 use App\Listing\App\Command\SortProducts;
 use App\Listing\App\Command\StartList;
 use App\Listing\App\Query\AllLists;
+use App\Listing\App\Query\DashboardOfList;
 use App\Listing\App\Query\ListOfId;
 use App\SharedKernel\Bridge\CommandBus;
 use App\SharedKernel\Bridge\QueryBus;
@@ -116,6 +117,7 @@ class AdminController
             $this->twig->render(
                 'Admin/Listing/dashboard.html.twig',
                 [
+                    'dashboard' => $this->queryBus->query(new DashboardOfList(base64_decode($listId))),
                     'list' => $this->queryBus->query(new ListOfId(Uuid::fromString(base64_decode($listId)))),
                     'menu_item' => 'dashboard',
                 ]

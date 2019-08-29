@@ -8,7 +8,6 @@
         </span>
     </h2>
 
-
     {% if list.enabled %}
         <a href="{{ path('admin_listing_disable', { listId: list.id }) }}" class="mdc-button mdc-button--outlined">
             <span class="mdc-button__label">Désactiver</span>
@@ -25,18 +24,17 @@
         <div class="mdc-layout-grid__inner" id="dashboard-list">
             <div class="mdc-layout-grid__cell">
                 <div class="dashboard-card mdc-elevation--z3">
-                    20 produits disponibles
-                    (sur 20)
+                    {{ dashboard.products.total }} produits disponibles
                 </div>
             </div>
             <div class="mdc-layout-grid__cell">
                 <div class="dashboard-card mdc-elevation--z3">
-                    10 contributions
+                    {{ dashboard.contributions.total }} contributions
                 </div>
             </div>
             <div class="mdc-layout-grid__cell">
                 <div class="dashboard-card mdc-elevation--z3">
-                    500 € récoltés
+                    {{ dashboard.money.total }} € récoltés
                 </div>
             </div>
         </div>
