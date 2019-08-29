@@ -3,66 +3,121 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Projection;
 
-use Prooph\EventSourcing\AggregateChanged;
-use App\SharedKernel\Projection\Projection;
-
 class Projector
 {
-    private $rootDir;
+    private $projectionStore;
 
-    public function __construct(string $rootDir)
+    private $streamName;
+
+    private $events;
+
+    private $aggregateId;
+
+    private $category;
+
+    private $shouldBeRun = false;
+
+    private $eachStream = false;
+
+    private $name;
+
+    private $partitionBy;
+
+    public function __construct(ProjectionStore $projectionStore, string $streamName, iterable $events)
     {
-        $this->rootDir = $rootDir;
+        $this->projectionStore = $projectionStore;
+        $this->streamName = $streamName;
+        $this->aggregateId = $this->extractAggregateId($streamName);
+        $this->category = $this->extractCategory($streamName);
+        $this->events = $events;
     }
 
-    public function updateProjection(string $projectionName, AggregateChanged $event, callable $updator, ?string $aggregateId = null)
+    public function createProjection($name)
     {
-        $projection = $this->load($aggregateId ?? $event->aggregateId(), $projectionName);
-        $projection->update($event, $updator);
-        $this->save($projection);
+        $this->name = $name;
+
+        return $this;
     }
 
-    public function load(string $aggregateId, string $name)
+    public function fromCategory(string $category)
     {
-        $projection = new Projection($aggregateId, $name);
-        $filename = $this->buildPath($projection);
+        $this->shouldBeRun = ($this->category === $category);
 
-        if (false === file_exists($filename)) {
-            return $projection;
+        return $this;
+    }
+
+    public function forEachStream()
+    {
+        $this->eachStream = true;
+
+        return $this;
+    }
+
+    public function when(array $handlers)
+    {
+        $this->handlers = $handlers;
+
+        return $this;
+    }
+
+    public function partitionBy(callable $partitionBy)
+    {
+        $this->partitionBy = $partitionBy;
+
+        return $this;
+    }
+
+    public function run()
+    {
+        if (false === $this->shouldBeRun) {
+            return;
         }
 
-        $projection->loadState(json_decode(file_get_contents($filename), true));
-
-        return $projection;
-    }
-
-    public function save(Projection $projection)
-    {
-        $path = $this->buildPath($projection);
-        $dir = dirname($path);
-
-        if (false === is_dir($dir)) {
-            mkdir($dir, 0777, true);
+        foreach ($this->events as $event) {
+            if (false === array_key_exists($event->messageName(), $this->handlers)) {
+                continue;
+            }
+            $projection = $this->loadProjection($event);
+            $handler = $this->handlers[$event->messageName()];
+            $state = $handler($projection->state(), $event);
+            $this->projectionStore->commit(
+                $projection->withState($state)
+            );
         }
 
-        $fp = fopen($path, 'w');
-        $result = fwrite($fp, json_encode($projection->state()));
-        fclose($fp);
-
-        if ($result === false) {
-            throw new \RuntimeException('Error during event store writing');
-        }
+        $this->projectionStore->flush();
     }
 
-    private function buildPath(Projection $projection): string
+    private function loadProjection($event)
     {
-        $streamNameHashed = sha1($projection->aggregateId());
+        $projectionId = $this->eachStream ? $this->aggregateId : null;
 
-        return
-            "{$this->rootDir}/{$projection->name()}/".
-            substr($streamNameHashed, 0, 2).'/'.
-            substr($streamNameHashed, 2, 2).'/'.
-            $projection->aggregateId().'.json'
-        ;
+        if (null !== $this->partitionBy) {
+            $projectionId = call_user_func_array($this->partitionBy, [$event]);
+        }
+
+        return $this->projectionStore->load($this->name, $projectionId);
+    }
+
+    private function extractAggregateId(string $streamName): string
+    {
+        $result = substr($streamName, strpos($streamName, '-') + 1);
+
+        if (false === $result) {
+            throw new \LogicException("Cannot read aggregate id from {$streamName}");
+        }
+
+        return $result;
+    }
+
+    private function extractCategory(string $streamName): string
+    {
+        $result = substr($streamName, 0, strpos($streamName, '-'));
+
+        if (false === $result) {
+            throw new \LogicException("Cannot read category from {$streamName}");
+        }
+
+        return $result;
     }
 }

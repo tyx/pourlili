@@ -51,6 +51,6 @@ class CurrentListListener implements EventSubscriberInterface
 
         $listId = base64_decode($listId);
 
-        putenv("CURRENT_LIST={$listId}");
+        putenv("CURRENT_LIST={$listId}"); // Should be better to move it to request->attributes
     }
 }
