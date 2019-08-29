@@ -14,6 +14,8 @@ final class ProjectionProophBridge extends AbstractPlugin
 {
     private $projections;
 
+    private const PRIORITY = 0;
+
     public function __construct(Projections $projections)
     {
         $this->projections = $projections;
@@ -38,7 +40,8 @@ final class ProjectionProophBridge extends AbstractPlugin
                 } else {
                     $this->cachedEventStreams[] = $recordedEvents;
                 }
-            }
+            },
+            self::PRIORITY
         );
 
         $this->listenerHandlers[] = $eventStore->attach(
@@ -57,7 +60,8 @@ final class ProjectionProophBridge extends AbstractPlugin
                 } else {
                     $this->cachedEventStreams[] = $recordedEvents;
                 }
-            }
+            },
+            self::PRIORITY
         );
 
         if ($eventStore instanceof TransactionalActionEventEmitterEventStore) {
@@ -69,14 +73,16 @@ final class ProjectionProophBridge extends AbstractPlugin
                     $this->projections->run($streamName, $this->cachedEventStreams);
 
                     $this->cachedEventStreams = [];
-                }
+                },
+                self::PRIORITY
             );
 
             $this->listenerHandlers[] = $eventStore->attach(
                 TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
                 function (ActionEvent $event): void {
                     $this->cachedEventStreams = [];
-                }
+                },
+                self::PRIORITY
             );
         }
     }

@@ -12,6 +12,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 final class MessengerProophBridge extends AbstractPlugin
 {
+    private const PRIORITY = -1;
+
     private $eventBus;
 
     public function __construct(MessageBusInterface $eventBus)
@@ -39,7 +41,8 @@ final class MessengerProophBridge extends AbstractPlugin
                 } else {
                     $this->cachedEventStreams[] = $recordedEvents;
                 }
-            }
+            },
+            self::PRIORITY
         );
 
         $this->listenerHandlers[] = $eventStore->attach(
@@ -59,7 +62,8 @@ final class MessengerProophBridge extends AbstractPlugin
                 } else {
                     $this->cachedEventStreams[] = $recordedEvents;
                 }
-            }
+            },
+            self::PRIORITY
         );
 
         if ($eventStore instanceof TransactionalActionEventEmitterEventStore) {
@@ -72,14 +76,16 @@ final class MessengerProophBridge extends AbstractPlugin
                         }
                     }
                     $this->cachedEventStreams = [];
-                }
+                },
+                self::PRIORITY
             );
 
             $this->listenerHandlers[] = $eventStore->attach(
                 TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
                 function (ActionEvent $event): void {
                     $this->cachedEventStreams = [];
-                }
+                },
+                self::PRIORITY
             );
         }
     }
