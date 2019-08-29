@@ -151,28 +151,8 @@ class ProductListProjectionRunner implements ProjectionRunner
 
                     return $state;
                 },
-                ProductListWasSorted::class => function ($state, $event) {
-                    $state['items'] = $this->sortProducts($state['items'], $event->sort());
-
-                    return $state;
-                }
             ])
             ->run()
         ;
-    }
-
-    private function sortProducts(array $products, array $newOrder): array
-    {
-        usort(
-            $products,
-            function ($a, $b) use ($newOrder) {
-                $indexA = array_search($a['id'], $newOrder, true);
-                $indexB = array_search($b['id'], $newOrder, true);
-
-                return $indexA <=> $indexB;
-            }
-        );
-
-        return $products;
     }
 }

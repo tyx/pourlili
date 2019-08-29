@@ -34,7 +34,7 @@ class DashboardProjectionRunner implements ProjectionRunner
                     return $state;
                 },
                 ProductWasRegistered::class => function ($state, $event) {
-                    $state['contributions']['total'] += 1;
+                    $state['products']['total'] += 1;
 
                     return $state;
                 }
