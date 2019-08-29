@@ -14,7 +14,7 @@ class ProductListProjectionRunner implements ProjectionRunner
             ->fromCategory('product')
             ->partitionBy(function ($event) { return $event->listId(); })
             ->when([
-                ProductWasRegistered::class => function (array $state, $event) {
+                ProductWasRegistered::class => function ($state, $event) {
                     $state['items'] = $state['items'] ?? [];
 
                     $state['items'][] = [

@@ -31,7 +31,7 @@ final class Product extends AggregateRoot
 
     private $enabled = true;
 
-    public static function register(Uuid $id, Uuid $listId, string $name, ?float $price, string $description, ?string $imagePath)
+    public static function register(Uuid $id, Uuid $listId, string $name, ?float $price, string $description, ?string $imagePath, ?string $uploadedPath = null)
     {
         $self = new static;
         $self->recordThat(
@@ -45,6 +45,9 @@ final class Product extends AggregateRoot
         if (null !== $imagePath) {
             $self->changeImage($imagePath);
         };
+        if (null !== $uploadedPath) {
+            $self->uploadImage($uploadedPath);
+        }
 
         return $self;
     }
