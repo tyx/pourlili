@@ -16,7 +16,9 @@ class EditProductForm extends AbstractType
         $builder
             ->add('id', HiddenType::class)
             ->add('name', TextType::class)
-            ->add('price', NumberType::class)
+            ->add('price', NumberType::class, [
+                'required' => false,
+            ])
             ->add('image', TextType::class, [
                 'required' => false,
             ])

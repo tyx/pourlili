@@ -24,7 +24,9 @@ class EditProductHandler
 
         $product->rename($command->name());
         $product->describe($command->description());
-        $product->changePrice($command->price());
+        if (null !== $command->price()) {
+            $product->changePrice($command->price());
+        }
         if (null !== $command->image()) {
             $product->changeImage($command->image());
         }

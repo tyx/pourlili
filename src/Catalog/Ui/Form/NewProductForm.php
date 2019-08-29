@@ -22,7 +22,9 @@ class NewProductForm extends AbstractType
         $this->productId = $options['product_id'];
         $builder
             ->add('name', TextType::class)
-            ->add('price', NumberType::class)
+            ->add('price', NumberType::class, [
+                'required' => false,
+            ])
             ->add('image', TextType::class)
             ->add('description', TextareaType::class)
         ;
