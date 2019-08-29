@@ -46,6 +46,13 @@ class Projector
         return $this;
     }
 
+    public function fromCategories(array $categories)
+    {
+        $this->shouldBeRun = in_array($this->category, $categories);
+
+        return $this;
+    }
+
     public function forEachStream()
     {
         $this->eachStream = true;
@@ -77,7 +84,13 @@ class Projector
             if (false === array_key_exists($event->messageName(), $this->handlers)) {
                 continue;
             }
+
             $projection = $this->loadProjection($event);
+
+            if ($projection->isEmpty() && array_key_exists('$init', $this->handlers)) {
+                $projection = $projection->withState($this->handlers['$init']);
+            }
+
             $handler = $this->handlers[$event->messageName()];
             $state = $handler($projection->state(), $event);
             $this->projectionStore->commit(

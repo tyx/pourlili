@@ -14,4 +14,9 @@ class ContributionWasConfirmed extends AggregateChanged
     {
         return $this->payload['list_id'];
     }
+
+    public function amount()
+    {
+        return $this->payload['amount'];
+    }
 }

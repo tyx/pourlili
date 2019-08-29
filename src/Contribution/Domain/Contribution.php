@@ -74,7 +74,7 @@ class Contribution extends AggregateRoot
         }
 
         $this->recordThat(
-            ContributionWasConfirmed::occur($this->aggregateId(), ['basket_id' => $this->basketId, 'list_id' => $this->listId])
+            ContributionWasConfirmed::occur($this->aggregateId(), ['basket_id' => $this->basketId, 'list_id' => $this->listId, 'amount' => $this->amount])
         );
     }
 

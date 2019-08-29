@@ -22,6 +22,11 @@ final class Projection
         return $this->name;
     }
 
+    public function isEmpty(): bool
+    {
+        return null === $this->state;
+    }
+
     public function id(): string
     {
         if (null === $this->id) {
