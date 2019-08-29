@@ -44,6 +44,10 @@ listing_dashboard:
     path: /listing/{listId}/dashboard
     controller: App\Listing\Ui\Controller\AdminController::dashboard
 
+guestbook_index:
+    path: /listing/{listId}/guestbook
+    controller: App\Contribution\Ui\Controller\AdminController::guestbook
+
 contribution_index:
     path: /listing/{listId}/contribution
     controller: App\Contribution\Ui\Controller\AdminController::index

@@ -4,6 +4,7 @@ namespace App\Contribution\Ui\Controller;
 
 use App\Contribution\App\Command\ConfirmContribution;
 use App\Contribution\App\Query\AllContributionOfList;
+use App\Contribution\App\Query\GuestBookOfList;
 use App\Listing\App\Query\ListOfId;
 use App\SharedKernel\Bridge\CommandBus;
 use App\SharedKernel\Bridge\QueryBus;
@@ -34,6 +35,17 @@ class AdminController
             $this->twig->render('Admin/Contribution/index.html.twig', [
                 'contributions' => $this->queryBus->query(new AllContributionOfList(base64_decode($listId))),
                 'menu_item' => 'contributions',
+                'list' => $this->queryBus->query(new ListOfId(Uuid::fromString(base64_decode($listId)))),
+            ])
+        );
+    }
+
+    public function guestbook($listId)
+    {
+        return new Response(
+            $this->twig->render('Admin/Contribution/guestbook.html.twig', [
+                'guestbook' => $this->queryBus->query(new GuestBookOfList(base64_decode($listId))),
+                'menu_item' => 'guestbook',
                 'list' => $this->queryBus->query(new ListOfId(Uuid::fromString(base64_decode($listId)))),
             ])
         );

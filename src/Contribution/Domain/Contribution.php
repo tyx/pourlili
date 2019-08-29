@@ -69,9 +69,9 @@ class Contribution extends AggregateRoot
 
     public function confirm()
     {
-        /*if (true === $this->confirmed) {
+        if (true === $this->confirmed) {
             return;
-        }*/
+        }
 
         $this->recordThat(
             ContributionWasConfirmed::occur($this->aggregateId(), ['basket_id' => $this->basketId, 'list_id' => $this->listId])
