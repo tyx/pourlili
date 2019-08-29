@@ -46,7 +46,7 @@
                         {% if product.price and 0 < product.alreadyCollected %}
                             Déjà {{ product.alreadyCollected }}&nbsp;€ récoltés
                                 <div class="mdl-progress mdl-js-progress is-upgraded">
-                                <div style="width: {{ product.progression }}%;" class="progressbar bar bar1"></div><div style="width: 100%;" class="bufferbar bar bar2"></div>
+                                <div style="width: {{ product.progression * 100 }}%;" class="progressbar bar bar1"></div><div style="width: 100%;" class="bufferbar bar bar2"></div>
                                 </div>
                         {% endif %}
                     </div>
