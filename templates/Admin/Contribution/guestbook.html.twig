@@ -1,0 +1,21 @@
+
+
+{% extends "Admin/base.html.twig" %}
+
+{% block main %}
+    <h2>Livre d'or</h2>
+    {% if 0 < guestbook.items|default([])|length %}
+        <ul class="mdc-list mdc-list--two-line">
+        {% for item in guestbook.items|default([]) %}
+            <li class="mdc-list-item" tabindex="0">
+                <span class="mdc-list-item__text">
+                    <span class="mdc-list-item__primary-text">{{ item.signature }} - {{ item.signed_at|localizeddate('medium', 'short', 'fr-FR') }}</span>
+                    <span class="mdc-list-item__secondary-text">{{ item.message }}</span>
+                </span>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune signature.</p>
+    {% endif %}
+{% endblock %}
