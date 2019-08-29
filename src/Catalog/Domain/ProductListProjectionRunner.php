@@ -39,6 +39,11 @@ class ProductListProjectionRunner implements ProjectionRunner
                                 return $item;
                             }
                             $item['alreadyCollected'] += $event->amount();
+
+                            if (null === $item['price']) {
+                                return $item;
+                            }
+
                             $item['remainingAmountToCollect'] -= $event->amount();
 
                             if ($item['price'] < $item['alreadyCollected']) {

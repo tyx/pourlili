@@ -19,7 +19,7 @@ class RegisterNewProduct
 
     private $description;
 
-    public function __construct(UuidInterface $listId, UuidInterface $id, string $name, float $price, ?string $imagePath, string $description)
+    public function __construct(UuidInterface $listId, UuidInterface $id, string $name, ?float $price, ?string $imagePath, string $description)
     {
         $this->listId = $listId;
         $this->id = $id;
@@ -44,7 +44,7 @@ class RegisterNewProduct
         return $this->name;
     }
 
-    public function price(): float
+    public function price(): ?float
     {
         return $this->price;
     }

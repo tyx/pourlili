@@ -17,7 +17,7 @@ class EditProduct
 
     private $description;
 
-    public function __construct(UuidInterface $id, string $name, float $price, ?string $imagePath, string $description)
+    public function __construct(UuidInterface $id, string $name, ?float $price, ?string $imagePath, string $description)
     {
         $this->id = $id;
         $this->name = $name;
@@ -36,7 +36,7 @@ class EditProduct
         return $this->name;
     }
 
-    public function price(): float
+    public function price(): ?float
     {
         return $this->price;
     }
