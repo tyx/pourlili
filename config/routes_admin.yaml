@@ -1,3 +1,11 @@
+homepage:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
+    defaults:
+        route: admin_listing_index
+        permanent: true
+        keepQueryParams: true
+
 listing_index:
     path: /listing
     controller: App\Listing\Ui\Controller\AdminController::index
