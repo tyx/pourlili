@@ -36,6 +36,21 @@ body {
     visibility: hidden;
 }
 
+.product-card__primary {
+    padding: 1rem;
+}
+.product-card__media {
+    background-size: contain;
+}
+.product-card__secondary {
+    padding: 0 1rem 8px;
+}
+.product-basic-with-header .product-card__secondary {
+    padding-top: 1rem;
+}
+.product-progress {
+    padding: 8px 0;
+}
 @media(min-width: 1024px) {
     .app-fab--absolute {
         bottom: 1.5rem;
