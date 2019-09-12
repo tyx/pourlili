@@ -1,6 +1,6 @@
 # Pour Lili : My Baby Registry
 
-Why the hell ?
+## Why the hell ?
 
 I wanted something simple for people but nice, and not affiliated with a baby store. Guess what, I did not find my happyness. So why not building it to play with nice concept like Event sourcing ? High five !
 
