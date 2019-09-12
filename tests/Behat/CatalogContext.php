@@ -1,32 +1,38 @@
 <?php
 namespace App\Tests\Behat;
 
+use App\Catalog\App\Command\RegisterNewProduct;
 use App\Catalog\Domain\Product;
 use App\Catalog\Domain\ProductList;
-use App\Catalog\Domain\ProductListRepository;
+use App\Catalog\Domain\ProductPriceWasChanged;
 use App\Catalog\Domain\ProductWasRegistered;
-use App\Catalog\Infra\ProophProductRepository;
+use App\Catalog\Domain\ProductWasRenamed;
+use App\Listing\Domain\ProductListWasStarted;
+use App\SharedKernel\Bridge\CommandBus;
+use ArrayIterator;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use PhpSpec\Matcher\MatchersProvider;
 use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Stream;
 use Prooph\EventStore\StreamName;
 use Ramsey\Uuid\Uuid;
 
-class CatalogContext implements Context
+class CatalogContext implements Context, MatchersProvider
 {
     private $eventStore;
 
-    private $list;
-
-    private $repository;
-
     private $uuid;
 
-    public function __construct(EventStore $eventStore, ProductListRepository $productListRepository)
+    private $productIds = [];
+
+    private $commandBus;
+
+    public function __construct(EventStore $eventStore, CommandBus $commandBus)
     {
         $this->eventStore = $eventStore;
-        $this->repository = $productListRepository;
+        $this->commandBus = $commandBus;
     }
 
     /**
@@ -35,7 +41,16 @@ class CatalogContext implements Context
     public function iStartedABabyList()
     {
         $this->uuid = Uuid::uuid4();
-        $this->list = ProductList::start($this->uuid);
+        $this->eventStore->create(
+            new Stream(
+                new StreamName("listing-{$this->uuid->toString()}"),
+                new ArrayIterator(
+                    [
+                        ProductListWasStarted::record($this->uuid->toString(), 'localhost'),
+                    ]
+                )
+            )
+        );
     }
 
     /**
@@ -43,8 +58,8 @@ class CatalogContext implements Context
      */
     public function iRegisterANewProductNamedAtPriceDescribedByInMyCatalog(string $name, float $price, string $description)
     {
-        $this->list->register(Uuid::uuid4(), $name, $price, $description);
-        $this->repository->save($this->list);
+        $this->productIds[$name] = Uuid::uuid4();
+        $this->commandBus->execute(new RegisterNewProduct($this->uuid, $this->productIds[$name], $name, $price, null, $description));
     }
 
     /**
@@ -52,14 +67,45 @@ class CatalogContext implements Context
      */
     public function myProductNamedAtPriceDescribedByShouldBeInMyCatalog(string $name, float $price, string $description)
     {
-        $changes = iterator_to_array($this->eventStore
-            ->load(new StreamName(ProductList::class.'-'.$this->uuid->toString()))
+        $id = $this->productIds[$name];
+        $expectedChanges = [
+            ProductWasRegistered::record($id->toString(), $this->uuid->toString()),
+            ProductWasRenamed::record($id->toString(), $this->uuid->toString(), $name),
+            ProductPriceWasChanged::record($id->toString(), $this->uuid->toString(), $price),
+        ];
+        $changes = iterator_to_array(
+            $this->eventStore
+            ->load(new StreamName("product-{$id->toString()}"))
         );
+        foreach ($expectedChanges as $change) {
+            expect($changes)->toContainChange($change);
+        }
+    }
 
-        expect($changes[1] ?? false)->toHaveType(ProductWasRegistered::class);
-        expect($changes[1]->aggregateId())->toBe($this->uuid->toString());
-        expect($changes[1]->name())->toBe($name);
-        expect($changes[1]->price())->toBe($price);
-        expect($changes[1]->description())->toBe($description);
+    public function getMatchers(): array
+    {
+        return [
+            'containChange' => function ($sut, $expectation) {
+                $past = array_map(
+                    function ($item) {
+                        $serialized = $item->toArray();
+                        unset(
+                            $serialized['created_at'],
+                            $serialized['uuid'],
+                            $serialized['metadata']['_aggregate_type'],
+                            $serialized['metadata']['_aggregate_version']
+                        );
+
+                        return $serialized;
+                    },
+                    $sut
+                );
+
+                $expected = $expectation->toArray();
+                unset($expected['created_at'], $expected['uuid'], $expected['metadata']['_aggregate_version']);
+
+                return in_array($expected, $past, true);
+            },
+        ];
     }
 }
