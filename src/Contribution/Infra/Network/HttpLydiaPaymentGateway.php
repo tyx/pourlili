@@ -66,11 +66,11 @@ class HttpLydiaPaymentGateway implements PaymentGateway
                 ->toArray()
             ;
 
-            // "{"error":"0","request_id":"32369","request_uuid":"adc84c2195d86d95c523cfd8a635ac54","message":"Votre demande a \u00e9t\u00e9 envoy\u00e9e. Vous receverez une confirmation par email d\u00e8s que le destinataire l'aura accept\u00e9e.","order_ref":"da7ad5a6-79b6-4425-8cf3-335e0dd529a71565637429","mobile_url":"https:\/\/homologation.lydia-app.com\/collect\/payment\/adc84c2195d86d95c523cfd8a635ac54\/auto"} ◀"
+            $this->logger->debug('Lydia payload', $payload);
 
             return new PaymentResult(
                 $payload['mobile_url'] ?? '',
-                '0' === ($payload['error'] ?? '0'),
+                array_key_exists('mobile_url', $payload),
                 $payload
             );
         } catch (HttpExceptionInterface $exception) {
