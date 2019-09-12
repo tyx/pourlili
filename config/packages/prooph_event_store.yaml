@@ -32,6 +32,7 @@ services:
     _defaults:
         public: false
 
+    Prooph\EventStore\InMemoryEventStore: ~
     Prooph\EventStore\EventStore: '@prooph_event_store.default'
 
     Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator: ~

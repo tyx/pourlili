@@ -7,6 +7,11 @@ use Prooph\EventSourcing\AggregateChanged;
 
 class ProductWasRenamed extends AggregateChanged
 {
+    public static function record(string $aggregateId, string $listId, string $newName)
+    {
+        return new static($aggregateId, ['list_id' => $listId, 'new_name' => $newName]);
+    }
+
     public function listId(): string
     {
         return $this->payload['list_id'];

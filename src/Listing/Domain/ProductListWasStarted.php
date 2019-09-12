@@ -7,7 +7,7 @@ use Prooph\EventSourcing\AggregateChanged;
 
 class ProductListWasStarted extends AggregateChanged
 {
-    public static function record(string $aggregateId, string $host, ?string $originId): self
+    public static function record(string $aggregateId, string $host, ?string $originId = null): self
     {
         return new static($aggregateId, ['host' => $host, 'origin_id' => $originId]);
     }
